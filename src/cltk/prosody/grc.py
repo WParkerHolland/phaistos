@@ -323,16 +323,38 @@ class Scansion:
         scanned_text = list()
         for sentence in sentence_syllables:
             scanned_sent = list()
-            for i, syllable in enumerate(sentence):
-                if self._long_by_position(
-                    i, syllable, sentence
-                ) or self._long_by_nature(syllable):
-                    scanned_sent.append("¯")
-                else:
-                    scanned_sent.append("˘")
+            i = 0
+            dactylCounter = 0
+            while i < len(sentence):
+                dactylCounter += 1
+
+                try: 
+                    # Check for anceps (long, either)
+                    if dactylCounter == 6:
+                        scanned_sent.append("¯X|")
+                        i += 2                
+                        dactylCounter = 0
+                    else:
+                        # Check for spondees (long, long)
+                        if self._long_by_nature(sentence[i + 1]) or self._long_by_position(i + 1, sentence[i + 1], sentence):
+                            scanned_sent.append("¯¯|")
+                            i += 2
+                        # Check for dactyls (long, short, short)
+                        else:
+                            # Check for impossible pattern (long, short, long)
+                            if self._long_by_nature(sentence[i + 2]) or self._long_by_position(i + 2, sentence[i + 2], sentence):
+                                scanned_sent.append("¯¯|")
+                                i += 2
+                            else:
+                                scanned_sent.append("¯˘˘|")
+                                i += 3
+                        
+                except IndexError:
+                     raise ValueError("IndexError while scanning")
+
             if len(scanned_sent) > 1:
                 del scanned_sent[-1]
-                scanned_sent.append("x")
+            scanned_sent.append("¯X|")
             scanned_text.append("".join(scanned_sent))
         return scanned_text
 
