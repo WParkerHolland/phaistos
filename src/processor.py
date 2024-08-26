@@ -93,5 +93,30 @@ def makePrologPresentable(scansion):
                     newScansion.append("x")
     return newScansion
 
+def checkScansion(scansion):
+    # This checks the scansion for any of the patterns we're looking for
+    # Will return a 2 lists of sentence indexes with the patterns found within, one for right way patterns and one for wrong way patterns
+    # [[SentenceIndex, PatternIndex], ...] is the format of the returned list
+    import janus_swi as janus
+    janus.consult("prolog/scansion.pl")
+    returnListRight = []
+    returnListWrong = []
+
+    for i in range(len(scansion)):
+        tempSentence = makePrologPresentable(scansion[i])
+
+        # Check for patterns found while reading the right way
+        tempObjRight = janus.query_once("rightWay({}, X)".format(tempSentence))
+        if(tempObjRight["truth"]):
+            returnListRight.append([i, tempObjRight["X"]])
+
+        # Check for patterns found while reading the wrong way
+        tempObjWrong = janus.query_once("wrongWay({}, X)".format(tempSentence))
+        if(tempObjWrong["truth"]):
+            returnListWrong.append([i, tempObjWrong["X"]])
+    
+    return returnListRight, returnListWrong
+    
+
 scans = greekToScansion("researchProject/texts/shortTheogeny.txt")
-print(makePrologPresentable(scans[0]))
+print(checkScansion(scans[0]))
