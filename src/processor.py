@@ -21,7 +21,7 @@ def greekToScansion(file_path):
     syllables = Scansion()._make_syllables(clean_accents)
     condensed = Scansion()._syllable_condenser(syllables)
     scanned = Scansion()._scansion(condensed)
-    return scanned, condensed
+    return scanned, condensed, clean_accents
 
 def makePresentable(scansion):
     # This function is used to make the scansion output more presentable
@@ -76,6 +76,13 @@ def makeMorePresentable(scansion, syllables):
         syllOffset += 1
     return finString
 
+def makeSyllablesPresentable(syllables):
+    # This function is used solely for presentation in displayMatches function
+    finString = ""
+    for character in syllables:
+        finString += character + " "
+    return finString
+
 def makePrologPresentable(scansion):
     # This function translates scansion so it doesn't use prolog operator symbols
     newScansion = []
@@ -117,6 +124,37 @@ def checkScansion(scansion):
     
     return returnListRight, returnListWrong
     
+def displayMatches(scansion, matchesRight, matchesWrong, sentences):
+    # This function displayes matches found in the scansion in a file
+    file = open("researchProject/output.txt", "w")
+    if matchesRight == [] and matchesWrong == []:
+        file.write(":(")
+    else:
+        rightWayPatterns = ["- u u | - - | - x",
+                             "- - | - - | - x"]
+        wrongWayPatterns = ["- - | - - | - - |",
+                             "- u u | - - | - - |",
+                             "- u u | - - | - u u |",
+                             "- - | - - | - u u |"]
+        
+        file.write("Matches found reading the right way:\n\n")
+        for match in matchesRight:
+            file.write("Match found in sentence {}:\n".format(match[0]))
+            file.write("Pattern found: {}\n".format(rightWayPatterns[match[1]]))
+            file.write("Sentence: {}\n\n".format(makeSyllablesPresentable(sentences[match[0]])))
+            file.write("Scansion: \n{}\n".format(makePresentable(scansion[match[0]])))
+
+        file.write("\nMatches found reading the wrong way:\n\n")
+        for match in matchesWrong:
+            file.write("Match found in sentence {}:\n".format(match[0]))
+            file.write("Pattern found: {}\n".format(wrongWayPatterns[match[1]]))
+            file.write("Sentence: {}\n\n".format(makeSyllablesPresentable(sentences[match[0]])))
+            file.write("Scansion: \n{}\n".format(makePresentable(scansion[match[0]])))
+    
+    file.close()
+
 
 scans = greekToScansion("researchProject/texts/shortTheogeny.txt")
-print(checkScansion(scans[0]))
+
+matchesRight, matchesWrong = checkScansion(scans[0])
+displayMatches(scans[0], matchesRight, matchesWrong, scans[1])
