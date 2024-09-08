@@ -155,6 +155,6 @@ def displayMatches(scansion, matchesRight, matchesWrong, sentences):
 
 
 scans = greekToScansion("researchProject/texts/shortTheogeny.txt")
-
-matchesRight, matchesWrong = checkScansion(scans[0])
-displayMatches(scans[0], matchesRight, matchesWrong, scans[1])
+print(scans[0])
+#matchesRight, matchesWrong = checkScansion(scans[0])
+#displayMatches(scans[0], matchesRight, matchesWrong, scans[1])

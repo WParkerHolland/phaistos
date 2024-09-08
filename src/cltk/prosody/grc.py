@@ -350,11 +350,12 @@ class Scansion:
                                 i += 3
                         
                 except IndexError:
-                     raise ValueError("IndexError while scanning")
+                     print("Error in {}".format(sentence))
+                     i += 1
 
             if len(scanned_sent) > 1:
                 del scanned_sent[-1]
-            scanned_sent.append("¯X|")
+            #scanned_sent.append("¯X|")
             scanned_text.append("".join(scanned_sent))
         return scanned_text
 
