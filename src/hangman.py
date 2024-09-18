@@ -2,7 +2,7 @@
 # Hangman Function
 # Design Doc - https://docs.google.com/document/d/1RYhjB8fTZh8LteizXC3_8jNXELYuW8u3lTbO_olbo0w/edit
 # Format of substitutionList: [ [[patternToSub], lettersSubbedIn], [[patternToSub], lettersSubbedIn], ... ]
-def hangman(substitutionList, diskOption = "default", symbolSet = "Greek1"):
+def hangman(substitutionList, diskOption = "default", symbolSet = "Greek1", fileNameMod = ""):
     import random
     singleSubs, multiSubs, diskSymbols, possibleSymbols, symbolsToReplace, replacedSymbols = [], [], [], [], [], []
     
@@ -41,7 +41,8 @@ def hangman(substitutionList, diskOption = "default", symbolSet = "Greek1"):
 
     #Creates a list of strings with the substitions, each element is a individual row
     for row in diskSymbols:
-        tempString = ""
+        tempScan = []
+        tempFoot = []
         i = 0
 
         while(i < len(row)):
@@ -49,32 +50,41 @@ def hangman(substitutionList, diskOption = "default", symbolSet = "Greek1"):
                 replaced = False
                 for pattern in multiSubs:
                     if(row[i:i + len(pattern[0])] == pattern[0]):
-                        tempString += pattern[1] + ' '
+                        for j in pattern[1]:
+                            tempFoot.append(j)
                         i += len(pattern[0]) - 1
                         replaced = True
                         break
                 
                 if(not(replaced)):
-                    tempString += str(singleSubs[row[i]]) + ' '
+                    tempFoot.append(str(singleSubs[row[i]]))
             else:
-                tempString += " | "
+                tempScan.append(tempFoot)
+                tempFoot = []
             
             i += 1
-        
-        replacedSymbols.append(tempString)
 
-    hangmanVisualizer(diskSymbols, replacedSymbols)
+        tempScan.append(tempFoot)
+        replacedSymbols.append(tempScan)
 
-def hangmanVisualizer(diskSymbols, replacedSymbols):
+    hangmanVisualizer(diskSymbols, replacedSymbols, fileNameMod)
+
+def hangmanVisualizer(diskSymbols, replacedSymbols, fileNameMod):
     # Put symbols in here once you have them
     # https://ctan.org/pkg/phaistos?lang=en
     phaistosSymbols = []
 
+    # Formatting replacedSymbols like diskSymbols
+    for i in range(len(replacedSymbols)):
+        for j in range(len(replacedSymbols[i])):
+            replacedSymbols[i][j] = ' '.join(replacedSymbols[i][j])
+        replacedSymbols[i] = " | ".join(replacedSymbols[i])
+    
     from datetime import date
 
     date = str(date.today())
     print(date)
-    file = open("researchProject/hangman" + date + ".txt", "w")
+    file = open("researchProject/outputs/hangman/" + date + fileNameMod + ".txt", "w")
     
     for i in range(len(diskSymbols)):
         # Go through disk symbols and replace them with the symbols in phaistosSymbols
@@ -83,4 +93,4 @@ def hangmanVisualizer(diskSymbols, replacedSymbols):
 
     file.close()
 
-hangman([[[12, 2], "ην"], [[27], 'τ']])
+hangman([[[12, 2], "ην"], [[27], 'τ']], fileNameMod="test")
