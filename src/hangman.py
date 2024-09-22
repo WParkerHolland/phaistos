@@ -94,21 +94,22 @@ def hangmanVisualizer(diskSymbols, replacedSymbols, fileNameMod):
         displaySymbols[i] = ' '.join(displaySymbols[i])
     for i in range(len(diskSymbols)):
         diskSymbols[i] = ' '.join(map(str, diskSymbols[i]))
-
-    print(diskSymbols)
-    print(replacedSymbols)
-    print(displaySymbols)
     
     from datetime import date
 
     date = str(date.today())
-    file = open("researchProject/outputs/hangman/" + date + fileNameMod + ".txt", "w")
+    file_path = "researchProject/outputs/hangman/" + date + fileNameMod + ".html"
     
-    for i in range(len(diskSymbols)):
-        # Go through disk symbols and replace them with the symbols in phaistosSymbols
-        file.write(str(diskSymbols[i]) + "\n")
-        file.write(str(replacedSymbols[i]) + "\n\n")
+    with open(file_path, "w", encoding="utf-8") as file:
+        file.write("<head><meta charset=\"utf-8\"></head>\n")
+        file.write("<html><body><pre>\n")
+        
+        for i in range(len(diskSymbols)):
+            # Write lines in the specified format
+            file.write(''.join(displaySymbols[i]).replace("&#", "&#x") + "\n")
+            file.write(diskSymbols[i] + "\n")
+            file.write(replacedSymbols[i] + "\n\n")
 
-    file.close()
+        file.write("</pre></body></html>")
 
 hangman([[[12, 2], "ην"], [[27], 'τ']], fileNameMod="test")

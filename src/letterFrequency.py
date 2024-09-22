@@ -107,4 +107,4 @@ def letter_frequency(fileName, cleaned = False, patternLength = 1):
         clean_text("researchProject/outputs/frequency/testCleaned.txt", patternLength)
 
 
-letter_frequency("researchProject/texts/thetheogeny.txt", False, 2)
+letter_frequency("researchProject/texts/thetheogeny.txt", True, 2)
