@@ -71,19 +71,37 @@ def hangman(substitutionList, diskOption = "default", symbolSet = "Greek1", file
 
 def hangmanVisualizer(diskSymbols, replacedSymbols, fileNameMod):
     # Put symbols in here once you have them
-    # https://ctan.org/pkg/phaistos?lang=en
-    phaistosSymbols = []
+    # https://www.fontspace.com/unicode/block/phaistos-disc
+    phaistosSymbols = ["&#101D0", "&#101D1", "&#101D2", "&#101D3", "&#101D4", "&#101D5", "&#101D6", "&#101D7", "&#101D8", "&#101D9", "&#101DA", "&#101DB", "&#101DC", "&#101DD", "&#101DE", "&#101DF", "&#101E0", "&#101E1", "&#101E2", "&#101E3", "&#101E4", "&#101E5", "&#101E6", "&#101E7", "&#101E8", "&#101E9", "&#101EA", "&#101EB", "&#101EC", "&#101ED", "&#101EE", "&#101EF", "&#101F0", "&#101F1", "&#101F2", "&#101F3", "&#101F4", "&#101F5", "&#101F6", "&#101F7", "&#101F8", "&#101F9", "&#101FA", "&#101FB", "&#101FC", "&#101FD", "#"]
+    displaySymbols = []
 
-    # Formatting replacedSymbols like diskSymbols
+    # Replacing the symbols in displaySymbols with phaistosSymbols
+    for i in range(len(diskSymbols)):
+        tempScan = []
+        for j in range(len(diskSymbols[i])):
+            if(diskSymbols[i][j] != '|'):
+                tempScan.append(phaistosSymbols[diskSymbols[i][j]])
+            else:
+                tempScan.append('|')
+        displaySymbols.append(tempScan)
+
+    # Formatting replacedSymbols, diskSymbols, and displaySymbols for output
     for i in range(len(replacedSymbols)):
         for j in range(len(replacedSymbols[i])):
             replacedSymbols[i][j] = ' '.join(replacedSymbols[i][j])
         replacedSymbols[i] = " | ".join(replacedSymbols[i])
+    for i in range(len(displaySymbols)):
+        displaySymbols[i] = ' '.join(displaySymbols[i])
+    for i in range(len(diskSymbols)):
+        diskSymbols[i] = ' '.join(map(str, diskSymbols[i]))
+
+    print(diskSymbols)
+    print(replacedSymbols)
+    print(displaySymbols)
     
     from datetime import date
 
     date = str(date.today())
-    print(date)
     file = open("researchProject/outputs/hangman/" + date + fileNameMod + ".txt", "w")
     
     for i in range(len(diskSymbols)):
