@@ -6,11 +6,13 @@ class PhaistosSymbol:
     index = 0
     vegas = False
     capital = False
+    vowel = False
 
-    def __init__(self, index, vegas = False, capital = False):
+    def __init__(self, index, vegas = False, capital = False, vowel = False):
         self.index = index
         self.vegas = vegas
         self.capital = capital
+        self.vowel = vowel
 
 # Function used to get the pattern of symbol indexes in a row
 def getPattern(row, start, length):
@@ -40,7 +42,7 @@ def listIntegerify(list):
 # Format of substitutionList: [ [[patternToSub], lettersSubbedIn, sectionForSub], [[patternToSub], lettersSubbedIn, sectionForSub], ... ]
 def hangman(substitutionList, diskOption = "default", symbolSet = "Greek1", fileNameMod = ""):
     import random
-    singleSubs, vegasSubs, capSubs, multiSubs, diskSymbols, possibleSymbols, possibleVegasSymbols, replacedSymbols = [], [], [], [], [], [], [], []
+    singleSubs, vegasSubs, capSubs, vowelSubs, multiSubs, diskSymbols, possibleSymbols, possibleVegasSymbols, possibleVowelSymbols, replacedSymbols = [], [], [], [], [], [], [], [], [], []
     
     # Setting the values of the disk, default factors in the damage but nothing else
     if(diskOption == "default"):
@@ -55,14 +57,30 @@ def hangman(substitutionList, diskOption = "default", symbolSet = "Greek1", file
                    [PhaistosSymbol(1), PhaistosSymbol(38), PhaistosSymbol(25), PhaistosSymbol(27), '|', PhaistosSymbol(40), PhaistosSymbol(36), PhaistosSymbol(26), PhaistosSymbol(2), '|', PhaistosSymbol(35), PhaistosSymbol(40), PhaistosSymbol(24), PhaistosSymbol(7), '|', PhaistosSymbol(25), PhaistosSymbol(42), PhaistosSymbol(37), PhaistosSymbol(22), '|', PhaistosSymbol(18), PhaistosSymbol(1), PhaistosSymbol(13), PhaistosSymbol(7), PhaistosSymbol(15), '|', PhaistosSymbol(33), PhaistosSymbol(39), PhaistosSymbol(1)],
                    [PhaistosSymbol(43), PhaistosSymbol(18), PhaistosSymbol(23), PhaistosSymbol(16), '|', PhaistosSymbol(12), PhaistosSymbol(20), PhaistosSymbol(24), PhaistosSymbol(33), '|', PhaistosSymbol(27), PhaistosSymbol(25), PhaistosSymbol(22), '|', PhaistosSymbol(5), PhaistosSymbol(23), PhaistosSymbol(37), PhaistosSymbol(2), '|', PhaistosSymbol(35), PhaistosSymbol(7), PhaistosSymbol(45), PhaistosSymbol(27), '|', PhaistosSymbol(7), PhaistosSymbol(40), PhaistosSymbol(22), PhaistosSymbol(12), PhaistosSymbol(2)]]
         singleSubs = list(range(0, 47))
+    elif(diskOption == "vegas"):
+        diskSymbols = [[PhaistosSymbol(38), PhaistosSymbol(3), PhaistosSymbol(10), '|', PhaistosSymbol(1, vowel=True), PhaistosSymbol(13), '|', PhaistosSymbol(21), PhaistosSymbol(37), PhaistosSymbol(35, vowel=True), PhaistosSymbol(27, vegas=True), PhaistosSymbol(27, vegas=True), PhaistosSymbol(12), PhaistosSymbol(2, vegas=True), '|', PhaistosSymbol(38), PhaistosSymbol(3), PhaistosSymbol(10), '|', PhaistosSymbol(35, vowel=True), PhaistosSymbol(19), PhaistosSymbol(23, vowel=True), '|', PhaistosSymbol(1, vowel=True), PhaistosSymbol(13), PhaistosSymbol(12), PhaistosSymbol(2, vegas=True), '|', PhaistosSymbol(12), PhaistosSymbol(26, vowel=True), PhaistosSymbol(31, vegas=True)],
+               [PhaistosSymbol(19), PhaistosSymbol(17), PhaistosSymbol(18), PhaistosSymbol(6), '|', PhaistosSymbol(27, vegas=True), PhaistosSymbol(18), PhaistosSymbol(32), PhaistosSymbol(14), PhaistosSymbol(27, vegas=True), PhaistosSymbol(12), PhaistosSymbol(2, vegas=True), '|', PhaistosSymbol(26, vowel=True), PhaistosSymbol(31, vegas=True), PhaistosSymbol(12), PhaistosSymbol(2, vegas=True), '|', PhaistosSymbol(1, vowel=True), PhaistosSymbol(28, vowel=True), '|', PhaistosSymbol(18), PhaistosSymbol(22), PhaistosSymbol(10), PhaistosSymbol(25), PhaistosSymbol(27, vegas=True), PhaistosSymbol(2, vegas=True), '|', PhaistosSymbol(26, vowel=True), PhaistosSymbol(31, vegas=True), PhaistosSymbol(12), PhaistosSymbol(2, vegas=True)],
+               [PhaistosSymbol(23, vowel=True), PhaistosSymbol(33, vowel=True), '|', PhaistosSymbol(21), PhaistosSymbol(37), PhaistosSymbol(35, vowel=True), PhaistosSymbol(27, vegas=True), PhaistosSymbol(27, vegas=True), PhaistosSymbol(12), PhaistosSymbol(2, vegas=True), '|', PhaistosSymbol(26, vowel=True), PhaistosSymbol(31, vegas=True), PhaistosSymbol(12), PhaistosSymbol(2, vegas=True), '|', PhaistosSymbol(1, vowel=True), PhaistosSymbol(28, vowel=True), '|', PhaistosSymbol(18), PhaistosSymbol(23, vowel=True), PhaistosSymbol(10), PhaistosSymbol(25), PhaistosSymbol(27, vegas=True), PhaistosSymbol(2, vegas=True), '|', PhaistosSymbol(11, vowel=True), PhaistosSymbol(39, vowel=True)],
+               [PhaistosSymbol(38), PhaistosSymbol(23, vowel=True), PhaistosSymbol(32), PhaistosSymbol(12), PhaistosSymbol(2, vegas=True), '|', PhaistosSymbol(7, vowel=True), PhaistosSymbol(40), PhaistosSymbol(41), PhaistosSymbol(1, vowel=True), '|', PhaistosSymbol(35, vowel=True), PhaistosSymbol(19), PhaistosSymbol(41), PhaistosSymbol(12), PhaistosSymbol(2, vegas=True), '|', PhaistosSymbol(35, vowel=True), PhaistosSymbol(26, vowel=True), PhaistosSymbol(31, vegas=True), '|', PhaistosSymbol(46), PhaistosSymbol(18), PhaistosSymbol(6), PhaistosSymbol(12), PhaistosSymbol(2, vegas=True), '|', PhaistosSymbol(2, vegas=True), PhaistosSymbol(44), PhaistosSymbol(27, vegas=True)],
+               [PhaistosSymbol(12), PhaistosSymbol(7, vowel=True), PhaistosSymbol(45, vowel=True), PhaistosSymbol(27, vegas=True), '|', PhaistosSymbol(33, vowel=True), PhaistosSymbol(40), PhaistosSymbol(4), PhaistosSymbol(12), PhaistosSymbol(2, vegas=True), '|', PhaistosSymbol(34), PhaistosSymbol(29, vegas=True), PhaistosSymbol(29, vegas=True), '|', PhaistosSymbol(7, vowel=True), PhaistosSymbol(45, vowel=True), PhaistosSymbol(29, vegas=True), '|', PhaistosSymbol(12), PhaistosSymbol(40), PhaistosSymbol(24), '|', PhaistosSymbol(18), PhaistosSymbol(1, vowel=True), PhaistosSymbol(13), PhaistosSymbol(12), PhaistosSymbol(2, vegas=True)],
+               [PhaistosSymbol(7, vowel=True), PhaistosSymbol(45, vowel=True), '|', PhaistosSymbol(25), PhaistosSymbol(23, vowel=True), PhaistosSymbol(34), PhaistosSymbol(29, vegas=True), '|', PhaistosSymbol(7, vowel=True), PhaistosSymbol(23, vowel=True), PhaistosSymbol(35, vowel=True), PhaistosSymbol(6), PhaistosSymbol(2, vegas=True), '|', PhaistosSymbol(7, vowel=True), PhaistosSymbol(18), PhaistosSymbol(39, vowel=True), PhaistosSymbol(30), PhaistosSymbol(9), '|', PhaistosSymbol(8, vowel=True), PhaistosSymbol(7, vowel=True), PhaistosSymbol(36), PhaistosSymbol(29, vegas=True), PhaistosSymbol(22), '|', PhaistosSymbol(24), PhaistosSymbol(18), PhaistosSymbol(23, vowel=True), PhaistosSymbol(7, vowel=True)],
+               [PhaistosSymbol(7, vowel=True), PhaistosSymbol(45, vowel=True), PhaistosSymbol(7, vowel=True), '|', PhaistosSymbol(35, vowel=True), PhaistosSymbol(18), PhaistosSymbol(7, vowel=True), '|', PhaistosSymbol(25), PhaistosSymbol(23, vowel=True), PhaistosSymbol(34), PhaistosSymbol(27, vegas=True), '|', PhaistosSymbol(8, vowel=True), PhaistosSymbol(7, vowel=True), PhaistosSymbol(36), PhaistosSymbol(29, vegas=True), PhaistosSymbol(22), '|', PhaistosSymbol(7, vowel=True), PhaistosSymbol(25), PhaistosSymbol(29, vegas=True), '|', PhaistosSymbol(13), PhaistosSymbol(8, vowel=True), PhaistosSymbol(29, vegas=True)],
+               [PhaistosSymbol(8, vowel=True), PhaistosSymbol(7, vowel=True), PhaistosSymbol(36), PhaistosSymbol(29, vegas=True), '|', PhaistosSymbol(1, vowel=True), PhaistosSymbol(27, vegas=True), PhaistosSymbol(9), PhaistosSymbol(2, vegas=True), '|', PhaistosSymbol(33, vowel=True), PhaistosSymbol(39, vowel=True), PhaistosSymbol(32), PhaistosSymbol(35, vowel=True), PhaistosSymbol(6), '|', PhaistosSymbol(1, vowel=True), PhaistosSymbol(33, vowel=True), PhaistosSymbol(29, vegas=True), '|', PhaistosSymbol(18), PhaistosSymbol(14), PhaistosSymbol(16), '|', PhaistosSymbol(35, vowel=True), PhaistosSymbol(20), PhaistosSymbol(24), PhaistosSymbol(24), PhaistosSymbol(29, vegas=True)],
+               [PhaistosSymbol(1, vowel=True), PhaistosSymbol(38), PhaistosSymbol(25), PhaistosSymbol(27, vegas=True), '|', PhaistosSymbol(40), PhaistosSymbol(36), PhaistosSymbol(26, vowel=True), PhaistosSymbol(2, vegas=True), '|', PhaistosSymbol(35, vowel=True), PhaistosSymbol(40), PhaistosSymbol(24), PhaistosSymbol(7, vowel=True), '|', PhaistosSymbol(25), PhaistosSymbol(42), PhaistosSymbol(37), PhaistosSymbol(22), '|', PhaistosSymbol(18), PhaistosSymbol(1, vowel=True), PhaistosSymbol(13), PhaistosSymbol(7, vowel=True), PhaistosSymbol(15), '|', PhaistosSymbol(33, vowel=True), PhaistosSymbol(39, vowel=True), PhaistosSymbol(1, vowel=True)],
+               [PhaistosSymbol(43, vowel=True), PhaistosSymbol(18), PhaistosSymbol(23, vowel=True), PhaistosSymbol(16), '|', PhaistosSymbol(12), PhaistosSymbol(20), PhaistosSymbol(24), PhaistosSymbol(33, vowel=True), '|', PhaistosSymbol(27, vegas=True), PhaistosSymbol(25), PhaistosSymbol(22), '|', PhaistosSymbol(5), PhaistosSymbol(23, vowel=True), PhaistosSymbol(37), PhaistosSymbol(2, vegas=True), '|', PhaistosSymbol(35, vowel=True), PhaistosSymbol(7, vowel=True), PhaistosSymbol(45, vowel=True), PhaistosSymbol(27, vegas=True), '|', PhaistosSymbol(7, vowel=True), PhaistosSymbol(40), PhaistosSymbol(22), PhaistosSymbol(12), PhaistosSymbol(2, vegas=True)]]
+        singleSubs = list(range(0, 47))
+        vegasSubs = list(range(0, 47))
+        vowelSubs = list(range(0, 47))
 
     # Setting the possible symbols to replace the disk symbols with
     if(symbolSet == "IPA"):
         possibleSymbols = ['k', "kʰ", 'j', 'g', 'p', "pʰ", 'b', 'w', 't', "tʰ", 'd', 'h', 'l', 'm', 'n', 'ŋ', 'r', 'r̥', 's', 'z', "ks", "ps", "d͡z", 'a', "aː", "ɛː", 'e', "eː", 'i', "iː", "ɔː", 'o', "uː", 'y', "yː", "ai", "au", "ei", "eu̯", "oi̯", "yi̯", "aːi̯", "ɛːi̯", "ɔːi̯"]
         possibleVegasSymbols = []
+        possibleVowelSymbols = []
     elif(symbolSet == "Greek1"):
         possibleSymbols = ['κ', 'χ', 'ι', 'γ', 'π', 'φ', 'β', 'υ', 'τ', 'θ', 'δ', '῾', 'λ', 'μ', 'ν', 'γ', 'ρ', 'ῤ', 'σ', 'ζ', 'ξ', 'ψ', 'ζ', 'ᾰ', 'ᾱ', 'η', 'ε', "ει", 'ῐ', 'ῑ', 'ω', 'ο', "ου", 'ῠ', 'ῡ', "αι", "αυ", "ει", "ευ", "οι", "υι", 'ᾳ', 'ῃ', 'ῳ']
-        possibleVegasSymbols = []
+        possibleVegasSymbols = ['α', 'ε', 'η', 'ι', 'o', 'υ', 'ω', 'σ', 'ρ', 'ν']
+        possibleVowelSymbols = ['α', 'ε', 'η', 'ι', 'o', 'υ', 'ω']
 
     # Divides the substitutions between single and multi symbol substitutions
     for pair in substitutionList:
@@ -70,8 +88,10 @@ def hangman(substitutionList, diskOption = "default", symbolSet = "Greek1", file
             try:
                 if(pair[2] == "v"):
                     vegasSubs[pair[0][0]] = pair[1]
-                if(pair[2] == "c"):
+                elif(pair[2] == "c"):
                     capSubs[pair[0][0]] = pair[1]
+                elif(pair[2] == "vo"):
+                    vowelSubs[pair[0][0]] = pair[1]
                 else:
                     singleSubs[pair[0][0]] = pair[1]
             except:
@@ -89,6 +109,9 @@ def hangman(substitutionList, diskOption = "default", symbolSet = "Greek1", file
     for i in range(len(capSubs)):
         if(isinstance(capSubs[i], int)):
             capSubs[i] = possibleSymbols[random.randint(0, len(possibleSymbols) - 1)]
+    for i in range(len(vowelSubs)):
+        if(isinstance(vowelSubs[i], int)):
+            vowelSubs[i] = possibleVowelSymbols[random.randint(0, len(possibleVowelSymbols) - 1)]
 
     #Creates a list of strings with the substitions, each element is a individual row
     for row in diskSymbols:
@@ -113,6 +136,8 @@ def hangman(substitutionList, diskOption = "default", symbolSet = "Greek1", file
                         tempFoot.append(str(vegasSubs[row[i].index]))
                     elif(row[i].capital):
                         tempFoot.append(str(capSubs[row[i].index]))
+                    elif(row[i].vowel):
+                        tempFoot.append(str(vowelSubs[row[i].index]))
                     else:
                         tempFoot.append(str(singleSubs[row[i].index]))
             else:
@@ -130,7 +155,7 @@ def hangman(substitutionList, diskOption = "default", symbolSet = "Greek1", file
 def hangmanVisualizer(diskSymbols, replacedSymbols, fileNameMod):
     # Put symbols in here once you have them
     # https://www.fontspace.com/unicode/block/phaistos-disc
-    phaistosSymbols = ["&#101D0", "&#101D1", "&#101D2", "&#101D3", "&#101D4", "&#101D5", "&#101D6", "&#101D7", "&#101D8", "&#101D9", "&#101DA", "&#101DB", "&#101DC", "&#101DD", "&#101DE", "&#101DF", "&#101E0", "&#101E1", "&#101E2", "&#101E3", "&#101E4", "&#101E5", "&#101E6", "&#101E7", "&#101E8", "&#101E9", "&#101EA", "&#101EB", "&#101EC", "&#101ED", "&#101EE", "&#101EF", "&#101F0", "&#101F1", "&#101F2", "&#101F3", "&#101F4", "&#101F5", "&#101F6", "&#101F7", "&#101F8", "&#101F9", "&#101FA", "&#101FB", "&#101FC", "&#101FD", "#"]
+    phaistosSymbols = ["&#101D0", "&#101D1", "&#101D2", "&#101D3", "&#101D4", "&#101D5", "&#101D6", "&#101D7", "&#101D8", "&#101D9", "&#101DA", "&#101DB", "&#101DC", "&#101DD", "&#101DE", "&#101DF", "&#101E0", "&#101E1", "&#101E2", "&#101E3", "&#101E4", "&#101E5", "&#101E6", "&#101E7", "&#101E8", "&#101E9", "&#101EA", "&#101EB", "&#101EC", "&#101ED", "&#101EE", "&#101EF", "&#101F0", "&#101F1", "&#101F2", "&#101F3", "&#101F4", "&#101F5", "&#101F6", "&#101F7", "&#101F8", "&#101F9", "&#101FA", "&#101FB", "&#101FC", "#"]
     displaySymbols = []
 
     # Replacing the symbols in displaySymbols with phaistosSymbols
@@ -138,7 +163,7 @@ def hangmanVisualizer(diskSymbols, replacedSymbols, fileNameMod):
         tempScan = []
         for j in range(len(diskSymbols[i])):
             if(diskSymbols[i][j] != '|'):
-                tempScan.append(phaistosSymbols[diskSymbols[i][j]])
+                tempScan.append(phaistosSymbols[diskSymbols[i][j]-1])
             else:
                 tempScan.append('|')
         displaySymbols.append(tempScan)
@@ -160,7 +185,7 @@ def hangmanVisualizer(diskSymbols, replacedSymbols, fileNameMod):
     
     with open(file_path, "w", encoding="utf-8") as file:
         file.write("<head><meta charset=\"utf-8\"></head>\n")
-        file.write("<html><body><pre>\n")
+        file.write("<html><body style=\"font-size:2em;\"><pre>\n")
         
         for i in range(len(diskSymbols)):
             # Write lines in the specified format
@@ -170,4 +195,4 @@ def hangmanVisualizer(diskSymbols, replacedSymbols, fileNameMod):
 
         file.write("</pre></body></html>")
 
-hangman([[[12, 2], "ην"], [[27], 'τ']], fileNameMod="test")
+hangman([[[12, 2], "ην"], [[27], 'τ']], diskOption="vegas", fileNameMod="test")
