@@ -181,7 +181,7 @@ def hangmanVisualizer(diskSymbols, replacedSymbols, fileNameMod):
     from datetime import date
 
     date = str(date.today())
-    file_path = "researchProject/outputs/hangman/" + date + fileNameMod + ".html"
+    file_path = "researchProject/outputs/hangman/" + fileNameMod + date + ".html"
     
     with open(file_path, "w", encoding="utf-8") as file:
         file.write("<head><meta charset=\"utf-8\"></head>\n")
@@ -195,4 +195,40 @@ def hangmanVisualizer(diskSymbols, replacedSymbols, fileNameMod):
 
         file.write("</pre></body></html>")
 
-hangman([[[12, 2], "ην"], [[27], 'τ']], diskOption="vegas", fileNameMod="test")
+# Function to read CSV formatted hangman data, then produce a number of possible combinations equal to iterations
+def hangmanCSV(filename, iterations):
+    import pandas as pd
+    import os
+    import random
+
+    # Read the CSV file, then print clean data
+    data = pd.read_csv(filename)
+    data = data.fillna('')
+    columns = data.columns[1:]
+    subList = []
+
+    # Loop through each collumn, creating a list of possible substitutions
+    for column in columns:
+        tempList = []
+        for sub in data[column]:
+            if(sub != ''):
+                tempList.append(sub)
+        subList.append(tempList)
+
+    # Make new directory for the created html files to go to
+    dirName = filename.split("/")[2].split(".")[0]
+    fileMod = "researchProject/outputs/hangman/" + dirName
+    os.makedirs(fileMod)
+
+    # For iterations number of times, select a random substitution from each list and run hangman
+    for j in range(iterations):
+        argList = []
+        for i in range(len(subList)):
+            tempChar = subList[i][random.randint(0, len(subList[i]) - 1)]
+            tempList = [[i+1], tempChar]
+            argList.append(tempList)
+
+        hangman(argList, fileNameMod=dirName + '/' + str(j + 1) + '_')
+
+    
+hangmanCSV("researchProject/hangmanInputs/carcieriInputs1.csv", 10)
