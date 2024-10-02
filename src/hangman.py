@@ -155,6 +155,7 @@ def hangman(substitutionList, diskOption = "default", symbolSet = "Greek1", file
 def hangmanVisualizer(diskSymbols, replacedSymbols, fileNameMod):
     # Put symbols in here once you have them
     # https://www.fontspace.com/unicode/block/phaistos-disc
+    import webbrowser
     phaistosSymbols = ["&#101D0", "&#101D1", "&#101D2", "&#101D3", "&#101D4", "&#101D5", "&#101D6", "&#101D7", "&#101D8", "&#101D9", "&#101DA", "&#101DB", "&#101DC", "&#101DD", "&#101DE", "&#101DF", "&#101E0", "&#101E1", "&#101E2", "&#101E3", "&#101E4", "&#101E5", "&#101E6", "&#101E7", "&#101E8", "&#101E9", "&#101EA", "&#101EB", "&#101EC", "&#101ED", "&#101EE", "&#101EF", "&#101F0", "&#101F1", "&#101F2", "&#101F3", "&#101F4", "&#101F5", "&#101F6", "&#101F7", "&#101F8", "&#101F9", "&#101FA", "&#101FB", "&#101FC", "#"]
     displaySymbols = []
 
@@ -194,6 +195,8 @@ def hangmanVisualizer(diskSymbols, replacedSymbols, fileNameMod):
             file.write(replacedSymbols[i] + "\n\n")
 
         file.write("</pre></body></html>")
+    
+    webbrowser.open_new_tab(file_path)
 
 # Function to read CSV formatted hangman data, then produce a number of possible combinations equal to iterations
 def hangmanCSV(filename, iterations):
@@ -218,7 +221,10 @@ def hangmanCSV(filename, iterations):
     # Make new directory for the created html files to go to
     dirName = filename.split("/")[2].split(".")[0]
     fileMod = "researchProject/outputs/hangman/" + dirName
-    os.makedirs(fileMod)
+    try:
+        os.makedirs(fileMod)
+    except FileExistsError:
+        pass
 
     # For iterations number of times, select a random substitution from each list and run hangman
     for j in range(iterations):
@@ -231,4 +237,4 @@ def hangmanCSV(filename, iterations):
         hangman(argList, fileNameMod=dirName + '/' + str(j + 1) + '_')
 
     
-hangmanCSV("researchProject/hangmanInputs/carcieriInputs1.csv", 10)
+hangmanCSV("researchProject/hangmanInputs/carcieriInputs1.csv", 1)
