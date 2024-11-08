@@ -26,54 +26,59 @@ def greekToScansion(file_path):
 def makePresentable(scansion):
     # This function is used to make the scansion output more presentable
     newScansion = ""
-    for sentence in scansion:
-        for syllable in sentence:
-            match syllable:
-                case "¯":
-                    newScansion += "- "
-                case "˘":
-                    newScansion += "u "
-                case "|":
-                    if newScansion[len(newScansion) - 1] != "\n":
-                        newScansion += "| "
-                case _:
-                    newScansion += "x\n"
+    for line in scansion:
+        for foot in line:
+            for syllable in foot:
+                match syllable:
+                    case "¯":
+                        newScansion += "- "
+                    case "˘":
+                        newScansion += "u "
+                    case "|":
+                        if newScansion[len(newScansion) - 1] != "\n":
+                            newScansion += "| "
+                    case _:
+                        newScansion += "x\n"
     return newScansion
 
 def makeMorePresentable(scansion, syllables):
+    # Combine syllables into proper format
+    tempList = []
+    for grouping in syllables:
+        tempList += grouping
+    syllables = tempList
+
     # This function will make the scansion output more presentable while also displaying how each syllable was classified
-    syllOffset = 0
+    lineOffset = 0
     finString = ""
-    for sentence in scansion:
+    for line in scansion:
         syllI = 0
         scanSent = ""
         syllSent = ""
-
-        for syllable in sentence:
-            match syllable:
-                case "¯":
-                    scanSent += "- "
-                    syllSent += str(syllables[syllOffset][syllI]) + " "
-                    syllI += 1
-                case "˘":
-                    scanSent += "u "
-                    syllSent += str(syllables[syllOffset][syllI]) + " "
-                    syllI += 1
-                case "|":
-                    if scanSent != "":
+        for foot in line:
+            for syllable in foot:
+                match syllable:
+                    case "¯":
+                        scanSent += "- "
+                        syllSent += str(syllables[lineOffset][syllI]) + " "
+                        syllI += 1
+                    case "˘":
+                        scanSent += "u "
+                        syllSent += str(syllables[lineOffset][syllI]) + " "
+                        syllI += 1
+                    case "|":
                         scanSent += "| "
                         syllSent += "| "
-                case _:
-                    scanSent += "x"
-                    syllSent += str(syllables[syllOffset][syllI]) + " "
-                    syllI += 1
-                    syllSent = syllSent.replace("\n", "\\n")
-                    finString += scanSent + "\n"
-                    finString += syllSent + "\n"
-                    scanSent = ""
-                    syllSent = ""
+                    case _:
+                        scanSent += "x"
+                        syllSent += str(syllables[lineOffset][syllI]) + " "
+                        syllSent = syllSent.replace("\n", "\\n")
+                        finString += scanSent + "\n"
+                        finString += syllSent + "\n\n"
+                        scanSent = ""
+                        syllSent = ""
         
-        syllOffset += 1
+        lineOffset += 1
     return finString
 
 def makeSyllablesPresentable(syllables):
@@ -155,5 +160,5 @@ def displayMatches(scansion, matchesRight, matchesWrong, sentences, fileNameMod 
 
 
 scans = greekToScansion("researchProject/texts/shortTheogeny.txt")
-matchesRight, matchesWrong = checkScansion(scans[0])
-displayMatches(scans[0], matchesRight, matchesWrong, scans[1])
+#matchesRight, matchesWrong = checkScansion(scans[0])
+#displayMatches(scans[0], matchesRight, matchesWrong, scans[1])

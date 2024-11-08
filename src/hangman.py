@@ -38,6 +38,7 @@ def listIntegerify(list):
         returnList.append(tempRow)
     return returnList
 
+hangman([[2], 'n'], [[27], 's'], [[]])
 # Design Doc - https://docs.google.com/document/d/166eCGtQkY7p9fehHq0iQ09CN0OKHsNsVhem0qRNi9nE/edit?usp=sharing
 # Format of substitutionList: [ [[patternToSub], lettersSubbedIn, sectionForSub], [[patternToSub], lettersSubbedIn, sectionForSub], ... ]
 def hangman(substitutionList, diskOption = "default", symbolSet = "Greek1", fileNameMod = ""):
@@ -235,6 +236,3 @@ def hangmanCSV(filename, iterations = 1):
             argList.append(tempList)
 
         hangman(argList, fileNameMod=dirName + '/' + str(j + 1) + '_')
-
-    
-hangman([])
