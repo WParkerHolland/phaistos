@@ -1,1 +1,172 @@
-woah
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phaistos Decoding Tool</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Phaistos Disc Decoding Tool</h1>
+    <input type="file" id="fileInput">
+    <button onclick="storeFile()">Upload File</button>
+    <br><br>
+    <button onclick="createHangman()">Create Hangman</button>
+    <h2>Created Hangman Combination</h2>
+    <div id="hangman" style="font-size:1em;"></div>
+
+    <script>
+        let uploadedFile;
+
+        class PhaistosSymbol {
+            constructor(index, vegas = false, capital = false, vowel = false) {
+            this.index = index;
+            this.vegas = vegas;
+            this.capital = capital;
+            this.vowel = vowel;
+            }
+        }
+    
+        function storeFile() {
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput.files.length > 0) {
+                uploadedFile = fileInput.files[0];
+                console.log('File stored:', uploadedFile);
+            } else {
+                console.log('No file selected');
+            }
+        }
+
+        function createHangman() {
+            if (!uploadedFile) {
+            console.log('No file uploaded');
+            return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const fileContent = event.target.result;
+                var uniqueContent = hangmanForWebsite(fileContent);
+                document.getElementById('hangman').innerText = uniqueContent;
+            };
+
+            reader.readAsText(uploadedFile);
+        }
+
+        function hangmanForWebsite(fileContent) {
+            // Data Cleaning
+            const rows = fileContent.split('\n');
+            const cleanedRows = rows.map(row => {
+                return row.split(',').map(cell => cell.trim() === 'NA' || cell.trim() === 'NaN' ? '' : cell).join(',');
+            });
+            const columns = [];
+            const numColumns = cleanedRows[0].split(',').length;
+            for (let i = 0; i < numColumns; i++) {
+                const column = cleanedRows.map(row => row.split(',')[i]);
+                columns.push(column.join(','));
+            }
+            const subList = [];
+
+            // Loop through each column, creating a list of possible substitutions
+            columns.forEach(column => {
+                const uniqueSubs = new Set();
+                column.split(',').forEach(cell => {
+                    if (cell !== '' && cell !== '\r\n' && cell !== '\n' && cell !== '\r') {
+                        uniqueSubs.add(cell.replace(/\r?\n|\r/g, ""));
+                    }
+                });
+                subList.push(Array.from(uniqueSubs));
+                uniqueSubs.clear();
+            });
+
+            // Select a random substitution from each list and pass it to hangman creation function
+            const substitutions = subList.slice(1).map(list => {
+                if(list.length === 1){
+                    return "Unsubstituted";
+                }
+                const randomIndex = Math.floor(Math.random() * list.length + 1);
+                if(list[randomIndex] === undefined) {
+                    return list[randomIndex - 1];
+                }
+                return list[randomIndex];
+            }).join(',');
+
+            return hangmanSubstitution(substitutions);
+        }
+
+        function hangmanSubstitution(substitutions, diskOption = "default"){
+            // Variable declarations
+            let singleSubs = [], diskSymbols = [], possibleSymbols = [], possibleVegasSymbols = [], possibleVowelSymbols = [], hexSymbols = [], returnString = "";
+            
+            // Selecting version of disk to substitute
+            if(diskOption === "default"){
+                diskSymbols = [[new PhaistosSymbol(38), new PhaistosSymbol(3), new PhaistosSymbol(10), '|', new PhaistosSymbol(1), new PhaistosSymbol(13), '|', new PhaistosSymbol(21), new PhaistosSymbol(37), new PhaistosSymbol(35), new PhaistosSymbol(27), new PhaistosSymbol(27), new PhaistosSymbol(12), new PhaistosSymbol(2), '|', new PhaistosSymbol(38), new PhaistosSymbol(3), new PhaistosSymbol(10), '|', new PhaistosSymbol(35), new PhaistosSymbol(19), new PhaistosSymbol(23), '|', new PhaistosSymbol(1), new PhaistosSymbol(13), new PhaistosSymbol(12), new PhaistosSymbol(2), '|', new PhaistosSymbol(12), new PhaistosSymbol(26), new PhaistosSymbol(31)],
+                        [new PhaistosSymbol(19), new PhaistosSymbol(17), new PhaistosSymbol(18), new PhaistosSymbol(6), '|', new PhaistosSymbol(27), new PhaistosSymbol(18), new PhaistosSymbol(32), new PhaistosSymbol(14), new PhaistosSymbol(27), new PhaistosSymbol(12), new PhaistosSymbol(2), '|', new PhaistosSymbol(26), new PhaistosSymbol(31), new PhaistosSymbol(12), new PhaistosSymbol(2), '|', new PhaistosSymbol(1), new PhaistosSymbol(28), '|', new PhaistosSymbol(18), new PhaistosSymbol(22), new PhaistosSymbol(10), new PhaistosSymbol(25), new PhaistosSymbol(27), new PhaistosSymbol(2), '|', new PhaistosSymbol(26), new PhaistosSymbol(31), new PhaistosSymbol(12), new PhaistosSymbol(2)],
+                        [new PhaistosSymbol(23), new PhaistosSymbol(33), '|', new PhaistosSymbol(21), new PhaistosSymbol(37), new PhaistosSymbol(35), new PhaistosSymbol(27), new PhaistosSymbol(27), new PhaistosSymbol(12), new PhaistosSymbol(2), '|', new PhaistosSymbol(26), new PhaistosSymbol(31), new PhaistosSymbol(12), new PhaistosSymbol(2), '|', new PhaistosSymbol(1), new PhaistosSymbol(28), '|', new PhaistosSymbol(18), new PhaistosSymbol(23), new PhaistosSymbol(10), new PhaistosSymbol(25), new PhaistosSymbol(27), new PhaistosSymbol(2), '|', new PhaistosSymbol(11), new PhaistosSymbol(39)],
+                        [new PhaistosSymbol(38), new PhaistosSymbol(23), new PhaistosSymbol(32), new PhaistosSymbol(12), new PhaistosSymbol(2), '|', new PhaistosSymbol(7), new PhaistosSymbol(40), new PhaistosSymbol(41), new PhaistosSymbol(1), '|', new PhaistosSymbol(35), new PhaistosSymbol(19), new PhaistosSymbol(41), new PhaistosSymbol(12), new PhaistosSymbol(2), '|', new PhaistosSymbol(35), new PhaistosSymbol(26), new PhaistosSymbol(31), '|', new PhaistosSymbol(46), new PhaistosSymbol(18), new PhaistosSymbol(6), new PhaistosSymbol(12), new PhaistosSymbol(2), '|', new PhaistosSymbol(2), new PhaistosSymbol(44), new PhaistosSymbol(27)],
+                        [new PhaistosSymbol(12), new PhaistosSymbol(7), new PhaistosSymbol(45), new PhaistosSymbol(27), '|', new PhaistosSymbol(33), new PhaistosSymbol(40), new PhaistosSymbol(4), new PhaistosSymbol(12), new PhaistosSymbol(2), '|', new PhaistosSymbol(34), new PhaistosSymbol(29), new PhaistosSymbol(29), '|', new PhaistosSymbol(7), new PhaistosSymbol(45), new PhaistosSymbol(29), '|', new PhaistosSymbol(12), new PhaistosSymbol(40), new PhaistosSymbol(24), '|', new PhaistosSymbol(18), new PhaistosSymbol(1), new PhaistosSymbol(13), new PhaistosSymbol(12), new PhaistosSymbol(2)],
+                        [new PhaistosSymbol(7), new PhaistosSymbol(45), '|', new PhaistosSymbol(25), new PhaistosSymbol(23), new PhaistosSymbol(34), new PhaistosSymbol(29), '|', new PhaistosSymbol(7), new PhaistosSymbol(23), new PhaistosSymbol(35), new PhaistosSymbol(6), new PhaistosSymbol(2), '|', new PhaistosSymbol(7), new PhaistosSymbol(18), new PhaistosSymbol(39), new PhaistosSymbol(30), new PhaistosSymbol(9), '|', new PhaistosSymbol(8), new PhaistosSymbol(7), new PhaistosSymbol(36), new PhaistosSymbol(29), new PhaistosSymbol(22), '|', new PhaistosSymbol(24), new PhaistosSymbol(18), new PhaistosSymbol(23), new PhaistosSymbol(7)],
+                        [new PhaistosSymbol(7), new PhaistosSymbol(45), new PhaistosSymbol(7), '|', new PhaistosSymbol(35), new PhaistosSymbol(18), new PhaistosSymbol(7), '|', new PhaistosSymbol(25), new PhaistosSymbol(23), new PhaistosSymbol(34), new PhaistosSymbol(27), '|', new PhaistosSymbol(8), new PhaistosSymbol(7), new PhaistosSymbol(36), new PhaistosSymbol(29), new PhaistosSymbol(22), '|', new PhaistosSymbol(7), new PhaistosSymbol(25), new PhaistosSymbol(29), '|', new PhaistosSymbol(13), new PhaistosSymbol(8), new PhaistosSymbol(29)],
+                        [new PhaistosSymbol(8), new PhaistosSymbol(7), new PhaistosSymbol(36), new PhaistosSymbol(29), '|', new PhaistosSymbol(1), new PhaistosSymbol(27), new PhaistosSymbol(9), new PhaistosSymbol(2), '|', new PhaistosSymbol(33), new PhaistosSymbol(39), new PhaistosSymbol(32), new PhaistosSymbol(35), new PhaistosSymbol(6), '|', new PhaistosSymbol(1), new PhaistosSymbol(33), new PhaistosSymbol(29), '|', new PhaistosSymbol(18), new PhaistosSymbol(14), new PhaistosSymbol(16), '|', new PhaistosSymbol(35), new PhaistosSymbol(20), new PhaistosSymbol(24), new PhaistosSymbol(24), new PhaistosSymbol(29)],
+                        [new PhaistosSymbol(1), new PhaistosSymbol(38), new PhaistosSymbol(25), new PhaistosSymbol(27), '|', new PhaistosSymbol(40), new PhaistosSymbol(36), new PhaistosSymbol(26), new PhaistosSymbol(2), '|', new PhaistosSymbol(35), new PhaistosSymbol(40), new PhaistosSymbol(24), new PhaistosSymbol(7), '|', new PhaistosSymbol(25), new PhaistosSymbol(42), new PhaistosSymbol(37), new PhaistosSymbol(22), '|', new PhaistosSymbol(18), new PhaistosSymbol(1), new PhaistosSymbol(13), new PhaistosSymbol(7), new PhaistosSymbol(15), '|', new PhaistosSymbol(33), new PhaistosSymbol(39), new PhaistosSymbol(1)],
+                        [new PhaistosSymbol(43), new PhaistosSymbol(18), new PhaistosSymbol(23), new PhaistosSymbol(16), '|', new PhaistosSymbol(12), new PhaistosSymbol(20), new PhaistosSymbol(24), new PhaistosSymbol(33), '|', new PhaistosSymbol(27), new PhaistosSymbol(25), new PhaistosSymbol(22), '|', new PhaistosSymbol(5), new PhaistosSymbol(23), new PhaistosSymbol(37), new PhaistosSymbol(2), '|', new PhaistosSymbol(35), new PhaistosSymbol(7), new PhaistosSymbol(45), new PhaistosSymbol(27), '|', new PhaistosSymbol(7), new PhaistosSymbol(40), new PhaistosSymbol(22), new PhaistosSymbol(12), new PhaistosSymbol(2)]];
+            } else if(diskOption === "vegas"){
+                diskSymbols = [[new PhaistosSymbol(38), new PhaistosSymbol(3), new PhaistosSymbol(10), '|', new PhaistosSymbol(1, vowel=true), new PhaistosSymbol(13), '|', new PhaistosSymbol(21), new PhaistosSymbol(37), new PhaistosSymbol(35, vowel=true), new PhaistosSymbol(27, vegas=true), new PhaistosSymbol(27, vegas=true), new PhaistosSymbol(12), new PhaistosSymbol(2, vegas=true), '|', new PhaistosSymbol(38), new PhaistosSymbol(3), new PhaistosSymbol(10), '|', new PhaistosSymbol(35, vowel=true), new PhaistosSymbol(19), new PhaistosSymbol(23, vowel=true), '|', new PhaistosSymbol(1, vowel=true), new PhaistosSymbol(13), new PhaistosSymbol(12), new PhaistosSymbol(2, vegas=true), '|', new PhaistosSymbol(12), new PhaistosSymbol(26, vowel=true), new PhaistosSymbol(31, vegas=true)],
+                    [new PhaistosSymbol(19), new PhaistosSymbol(17), new PhaistosSymbol(18), new PhaistosSymbol(6), '|', new PhaistosSymbol(27, vegas=true), new PhaistosSymbol(18), new PhaistosSymbol(32), new PhaistosSymbol(14), new PhaistosSymbol(27, vegas=true), new PhaistosSymbol(12), new PhaistosSymbol(2, vegas=true), '|', new PhaistosSymbol(26, vowel=true), new PhaistosSymbol(31, vegas=true), new PhaistosSymbol(12), new PhaistosSymbol(2, vegas=true), '|', new PhaistosSymbol(1, vowel=true), new PhaistosSymbol(28, vowel=true), '|', new PhaistosSymbol(18), new PhaistosSymbol(22), new PhaistosSymbol(10), new PhaistosSymbol(25), new PhaistosSymbol(27, vegas=true), new PhaistosSymbol(2, vegas=true), '|', new PhaistosSymbol(26, vowel=true), new PhaistosSymbol(31, vegas=true), new PhaistosSymbol(12), new PhaistosSymbol(2, vegas=true)],
+                    [new PhaistosSymbol(23, vowel=true), new PhaistosSymbol(33, vowel=true), '|', new PhaistosSymbol(21), new PhaistosSymbol(37), new PhaistosSymbol(35, vowel=true), new PhaistosSymbol(27, vegas=true), new PhaistosSymbol(27, vegas=true), new PhaistosSymbol(12), new PhaistosSymbol(2, vegas=true), '|', new PhaistosSymbol(26, vowel=true), new PhaistosSymbol(31, vegas=true), new PhaistosSymbol(12), new PhaistosSymbol(2, vegas=true), '|', new PhaistosSymbol(1, vowel=true), new PhaistosSymbol(28, vowel=true), '|', new PhaistosSymbol(18), new PhaistosSymbol(23, vowel=true), new PhaistosSymbol(10), new PhaistosSymbol(25), new PhaistosSymbol(27, vegas=true), new PhaistosSymbol(2, vegas=true), '|', new PhaistosSymbol(11, vowel=true), new PhaistosSymbol(39, vowel=true)],
+                    [new PhaistosSymbol(38), new PhaistosSymbol(23, vowel=true), new PhaistosSymbol(32), new PhaistosSymbol(12), new PhaistosSymbol(2, vegas=true), '|', new PhaistosSymbol(7, vowel=true), new PhaistosSymbol(40), new PhaistosSymbol(41), new PhaistosSymbol(1, vowel=true), '|', new PhaistosSymbol(35, vowel=true), new PhaistosSymbol(19), new PhaistosSymbol(41), new PhaistosSymbol(12), new PhaistosSymbol(2, vegas=true), '|', new PhaistosSymbol(35, vowel=true), new PhaistosSymbol(26, vowel=true), new PhaistosSymbol(31, vegas=true), '|', new PhaistosSymbol(46), new PhaistosSymbol(18), new PhaistosSymbol(6), new PhaistosSymbol(12), new PhaistosSymbol(2, vegas=true), '|', new PhaistosSymbol(2, vegas=true), new PhaistosSymbol(44), new PhaistosSymbol(27, vegas=true)],
+                    [new PhaistosSymbol(12), new PhaistosSymbol(7, vowel=true), new PhaistosSymbol(45, vowel=true), new PhaistosSymbol(27, vegas=true), '|', new PhaistosSymbol(33, vowel=true), new PhaistosSymbol(40), new PhaistosSymbol(4), new PhaistosSymbol(12), new PhaistosSymbol(2, vegas=true), '|', new PhaistosSymbol(34), new PhaistosSymbol(29, vegas=true), new PhaistosSymbol(29, vegas=true), '|', new PhaistosSymbol(7, vowel=true), new PhaistosSymbol(45, vowel=true), new PhaistosSymbol(29, vegas=true), '|', new PhaistosSymbol(12), new PhaistosSymbol(40), new PhaistosSymbol(24), '|', new PhaistosSymbol(18), new PhaistosSymbol(1, vowel=true), new PhaistosSymbol(13), new PhaistosSymbol(12), new PhaistosSymbol(2, vegas=true)],
+                    [new PhaistosSymbol(7, vowel=true), new PhaistosSymbol(45, vowel=true), '|', new PhaistosSymbol(25), new PhaistosSymbol(23, vowel=true), new PhaistosSymbol(34), new PhaistosSymbol(29, vegas=true), '|', new PhaistosSymbol(7, vowel=true), new PhaistosSymbol(23, vowel=true), new PhaistosSymbol(35, vowel=true), new PhaistosSymbol(6), new PhaistosSymbol(2, vegas=true), '|', new PhaistosSymbol(7, vowel=true), new PhaistosSymbol(18), new PhaistosSymbol(39, vowel=true), new PhaistosSymbol(30), new PhaistosSymbol(9), '|', new PhaistosSymbol(8, vowel=true), new PhaistosSymbol(7, vowel=true), new PhaistosSymbol(36), new PhaistosSymbol(29, vegas=true), new PhaistosSymbol(22), '|', new PhaistosSymbol(24), new PhaistosSymbol(18), new PhaistosSymbol(23, vowel=true), new PhaistosSymbol(7, vowel=true)],
+                    [new PhaistosSymbol(7, vowel=true), new PhaistosSymbol(45, vowel=true), new PhaistosSymbol(7, vowel=true), '|', new PhaistosSymbol(35, vowel=true), new PhaistosSymbol(18), new PhaistosSymbol(7, vowel=true), '|', new PhaistosSymbol(25), new PhaistosSymbol(23, vowel=true), new PhaistosSymbol(34), new PhaistosSymbol(27, vegas=true), '|', new PhaistosSymbol(8, vowel=true), new PhaistosSymbol(7, vowel=true), new PhaistosSymbol(36), new PhaistosSymbol(29, vegas=true), new PhaistosSymbol(22), '|', new PhaistosSymbol(7, vowel=true), new PhaistosSymbol(25), new PhaistosSymbol(29, vegas=true), '|', new PhaistosSymbol(13), new PhaistosSymbol(8, vowel=true), new PhaistosSymbol(29, vegas=true)],
+                    [new PhaistosSymbol(8, vowel=true), new PhaistosSymbol(7, vowel=true), new PhaistosSymbol(36), new PhaistosSymbol(29, vegas=true), '|', new PhaistosSymbol(1, vowel=true), new PhaistosSymbol(27, vegas=true), new PhaistosSymbol(9), new PhaistosSymbol(2, vegas=true), '|', new PhaistosSymbol(33, vowel=true), new PhaistosSymbol(39, vowel=true), new PhaistosSymbol(32), new PhaistosSymbol(35, vowel=true), new PhaistosSymbol(6), '|', new PhaistosSymbol(1, vowel=true), new PhaistosSymbol(33, vowel=true), new PhaistosSymbol(29, vegas=true), '|', new PhaistosSymbol(18), new PhaistosSymbol(14), new PhaistosSymbol(16), '|', new PhaistosSymbol(35, vowel=true), new PhaistosSymbol(20), new PhaistosSymbol(24), new PhaistosSymbol(24), new PhaistosSymbol(29, vegas=true)],
+                    [new PhaistosSymbol(1, vowel=true), new PhaistosSymbol(38), new PhaistosSymbol(25), new PhaistosSymbol(27, vegas=true), '|', new PhaistosSymbol(40), new PhaistosSymbol(36), new PhaistosSymbol(26, vowel=true), new PhaistosSymbol(2, vegas=true), '|', new PhaistosSymbol(35, vowel=true), new PhaistosSymbol(40), new PhaistosSymbol(24), new PhaistosSymbol(7, vowel=true), '|', new PhaistosSymbol(25), new PhaistosSymbol(42), new PhaistosSymbol(37), new PhaistosSymbol(22), '|', new PhaistosSymbol(18), new PhaistosSymbol(1, vowel=true), new PhaistosSymbol(13), new PhaistosSymbol(7, vowel=true), new PhaistosSymbol(15), '|', new PhaistosSymbol(33, vowel=true), new PhaistosSymbol(39, vowel=true), new PhaistosSymbol(1, vowel=true)],
+                    [new PhaistosSymbol(43, vowel=true), new PhaistosSymbol(18), new PhaistosSymbol(23, vowel=true), new PhaistosSymbol(16), '|', new PhaistosSymbol(12), new PhaistosSymbol(20), new PhaistosSymbol(24), new PhaistosSymbol(33, vowel=true), '|', new PhaistosSymbol(27, vegas=true), new PhaistosSymbol(25), new PhaistosSymbol(22), '|', new PhaistosSymbol(5), new PhaistosSymbol(23, vowel=true), new PhaistosSymbol(37), new PhaistosSymbol(2, vegas=true), '|', new PhaistosSymbol(35, vowel=true), new PhaistosSymbol(7, vowel=true), new PhaistosSymbol(45, vowel=true), new PhaistosSymbol(27, vegas=true), '|', new PhaistosSymbol(7, vowel=true), new PhaistosSymbol(40), new PhaistosSymbol(22), new PhaistosSymbol(12), new PhaistosSymbol(2, vegas=true)]];
+            }
+
+            // Creating list of possible symbols for those without substitutions
+            possibleSymbols = ['κ', 'χ', 'ι', 'γ', 'π', 'φ', 'β', 'υ', 'τ', 'θ', 'δ', '῾', 'λ', 'μ', 'ν', 'γ', 'ρ', 'ῤ', 'σ', 'ζ', 'ξ', 'ψ', 'ζ', 'ᾰ', 'ᾱ', 'η', 'ε', "ει", 'ῐ', 'ῑ', 'ω', 'ο', "ου", 'ῠ', 'ῡ', "αι", "αυ", "ει", "ευ", "οι", "υι", 'ᾳ', 'ῃ', 'ῳ'];
+            possibleVegasSymbols = ['α', 'ε', 'η', 'ι', 'o', 'υ', 'ω', 'σ', 'ρ', 'ν'];
+            possibleVowelSymbols = ['α', 'ε', 'η', 'ι', 'o', 'υ', 'ω'];
+            hexSymbols = ["", "&#101D0", "&#101D1", "&#101D2", "&#101D3", "&#101D4", "&#101D5", "&#101D6", "&#101D7", "&#101D8", "&#101D9", "&#101DA", "&#101DB", "&#101DC", "&#101DD", "&#101DE", "&#101DF", "&#101E0", "&#101E1", "&#101E2", "&#101E3", "&#101E4", "&#101E5", "&#101E6", "&#101E7", "&#101E8", "&#101E9", "&#101EA", "&#101EB", "&#101EC", "&#101ED", "&#101EE", "&#101EF", "&#101F0", "&#101F1", "&#101F2", "&#101F3", "&#101F4", "&#101F5", "&#101F6", "&#101F7", "&#101F8", "&#101F9", "&#101FA", "&#101FB", "&#101FC", "#"];
+            singleSubs = Array.from({length: 47}, (_, i) => "Unsubstituted");
+            substitutions = substitutions.split(',');
+
+            // Loop through substitions, replacing values in single subs with the values from the substitution
+            for(let i = 0; i < substitutions.length; i++){
+                singleSubs[i+1] = substitutions[i];
+            }
+
+            // Loop through disk symbols, replacing values with the substitutions
+            for(i = 0; i < diskSymbols.length; i++){
+                let tempSymbolString = "", tempSubString = "", tempIndexString = "";
+                for(j = 0; j < diskSymbols[i].length; j++){
+                    if(diskSymbols[i][j] === "|"){
+                        tempSymbolString += " | ";
+                        tempSubString += " | ";
+                        tempIndexString += " | ";
+                    } else {
+                        tempSymbolString += hexSymbols[diskSymbols[i][j].index] + " ";
+                        tempIndexString += diskSymbols[i][j].index + " ";
+
+                        if(singleSubs[diskSymbols[i][j].index] !== "Unsubstituted"){
+                            tempSubString += singleSubs[diskSymbols[i][j].index] + " ";
+                        } else {
+                            if(diskSymbols[i][j].vowel){
+                                tempSubString += possibleVowelSymbols[Math.floor(Math.random() * possibleVowelSymbols.length)] + " ";
+                            } else if(diskSymbols[i][j].vegas){
+                                tempSubString += possibleVegasSymbols[Math.floor(Math.random() * possibleVegasSymbols.length)] + " ";
+                            } else {
+                                tempSubString += possibleSymbols[Math.floor(Math.random() * possibleSymbols.length)] + " ";
+                            }
+                        }
+                    }
+                }
+
+                returnString += tempSymbolString + "\n" + tempIndexString + "\n" + tempSubString + "\n\n";
+            }
+
+            return returnString;
+        }
+    </script>
+</body>
+</html>
