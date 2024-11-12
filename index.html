@@ -11,12 +11,22 @@
     <input type="file" id="fileInput">
     <button onclick="storeFile()">Upload File</button>
     <br><br>
+    
+    <label for="diskModeSelect">Select Disk Mode:</label>
+    <select id="diskModeSelect" onchange="changeDiskMode()">
+        <option value="default">Default</option>
+        <option value="vegas">Vegas</option>
+    </select>
+    
+    <br><br>
+
     <button onclick="createHangman()">Create Hangman</button>
     <h2>Created Hangman Combination</h2>
     <div id="hangman" style="font-size:1em;"></div>
 
     <script>
         let uploadedFile;
+        let diskMode = "default";
 
         class PhaistosSymbol {
             constructor(index, vegas = false, capital = false, vowel = false) {
@@ -35,6 +45,12 @@
             } else {
                 console.log('No file selected');
             }
+        }
+
+        function changeDiskMode() {
+            const selectElement = document.getElementById('diskModeSelect');
+            diskMode = selectElement.value;
+            console.log('Disk mode changed to:', diskMode);
         }
 
         function createHangman() {
@@ -91,12 +107,12 @@
                 return list[randomIndex];
             }).join(',');
 
-            return hangmanSubstitution(substitutions);
+            return hangmanSubstitution(substitutions, diskMode);
         }
 
         function hangmanSubstitution(substitutions, diskOption = "default"){
             // Variable declarations
-            let singleSubs = [], diskSymbols = [], possibleSymbols = [], possibleVegasSymbols = [], possibleVowelSymbols = [], hexSymbols = [], returnString = "";
+            let singleSubs = [], subTracker = [], diskSymbols = [], possibleSymbols = [], possibleVegasSymbols = [], possibleVowelSymbols = [], hexSymbols = [], returnString = "";
             
             // Selecting version of disk to substitute
             if(diskOption === "default"){
@@ -129,11 +145,23 @@
             possibleVowelSymbols = ['α', 'ε', 'η', 'ι', 'o', 'υ', 'ω'];
             hexSymbols = ["", "&#101D0", "&#101D1", "&#101D2", "&#101D3", "&#101D4", "&#101D5", "&#101D6", "&#101D7", "&#101D8", "&#101D9", "&#101DA", "&#101DB", "&#101DC", "&#101DD", "&#101DE", "&#101DF", "&#101E0", "&#101E1", "&#101E2", "&#101E3", "&#101E4", "&#101E5", "&#101E6", "&#101E7", "&#101E8", "&#101E9", "&#101EA", "&#101EB", "&#101EC", "&#101ED", "&#101EE", "&#101EF", "&#101F0", "&#101F1", "&#101F2", "&#101F3", "&#101F4", "&#101F5", "&#101F6", "&#101F7", "&#101F8", "&#101F9", "&#101FA", "&#101FB", "&#101FC", "#"];
             singleSubs = Array.from({length: 47}, (_, i) => "Unsubstituted");
+            subTracker = Array.from({length: 47}, (_, i) => "Unsubstituted");
             substitutions = substitutions.split(',');
 
             // Loop through substitions, replacing values in single subs with the values from the substitution
             for(let i = 0; i < substitutions.length; i++){
-                singleSubs[i+1] = substitutions[i];
+                try{
+                    singleSubs[i+1] = substitutions[i];
+                    subTracker[i+1] = "Subbed";
+                } catch {
+                    continue;
+                }
+            }
+            
+            for(let i = 0; i < singleSubs.length; i++){
+                if(singleSubs[i] === "Unsubstituted"){
+                    singleSubs[i] = possibleSymbols[Math.floor(Math.random() * possibleSymbols.length)];
+                }
             }
 
             // Loop through disk symbols, replacing values with the substitutions
@@ -148,7 +176,7 @@
                         tempSymbolString += hexSymbols[diskSymbols[i][j].index] + " ";
                         tempIndexString += diskSymbols[i][j].index + " ";
 
-                        if(singleSubs[diskSymbols[i][j].index] !== "Unsubstituted"){
+                        if(subTracker[diskSymbols[i][j].index] === "Subbed"){
                             tempSubString += singleSubs[diskSymbols[i][j].index] + " ";
                         } else {
                             if(diskSymbols[i][j].vowel){
