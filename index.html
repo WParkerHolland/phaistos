@@ -22,7 +22,7 @@
 
     <button onclick="createHangman()">Create Hangman</button>
     <h2>Created Hangman Combination</h2>
-    <raw id="hangman" style="font-size:1em;"></raw>
+    <div id="hangman" style="font-size:1em;"></div>
 
     <script>
         let uploadedFile;
@@ -173,7 +173,7 @@
                         tempSubString += " | ";
                         tempIndexString += " | ";
                     } else {
-                        tempSymbolString += hexSymbols[diskSymbols[i][j].index] + " ";
+                        tempSymbolString += String.fromCharCode(parseInt(hexSymbols[diskSymbols[i][j].index].replace('&#x', '').replace(';', ''), 16)) + " ";
                         tempIndexString += diskSymbols[i][j].index + " ";
 
                         if(subTracker[diskSymbols[i][j].index] === "Subbed"){
@@ -189,7 +189,7 @@
                         }
                     }
                 }
-
+                
                 returnString += tempSymbolString + "\n" + tempIndexString + "\n" + tempSubString + "\n\n";
             }
 
