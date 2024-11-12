@@ -18,6 +18,11 @@
         <option value="vegas">Vegas</option>
     </select>
     
+    <label for="encodeInt">Encoding Integer:</label>
+    <button onclick="decrementEncodeInt()">-</button>
+    <span id="encodeIntDisplay">16</span>
+    <button onclick="incrementEncodeInt()">+</button>
+
     <br><br>
 
     <button onclick="createHangman()">Create Hangman</button>
@@ -27,6 +32,7 @@
     <script>
         let uploadedFile;
         let diskMode = "default";
+        let encodeInt = 16;
 
         class PhaistosSymbol {
             constructor(index, vegas = false, capital = false, vowel = false) {
@@ -51,6 +57,20 @@
             const selectElement = document.getElementById('diskModeSelect');
             diskMode = selectElement.value;
             console.log('Disk mode changed to:', diskMode);
+        }
+
+        function incrementEncodeInt() {
+            encodeInt++;
+            document.getElementById('encodeIntDisplay').innerText = encodeInt;
+            console.log('Encoding integer incremented to:', encodeInt);
+        }
+
+        function decrementEncodeInt() {
+            if (encodeInt > 1) {
+                encodeInt--;
+                document.getElementById('encodeIntDisplay').innerText = encodeInt;
+                console.log('Encoding integer decremented to:', encodeInt);
+            }
         }
 
         function createHangman() {
@@ -173,7 +193,7 @@
                         tempSubString += " | ";
                         tempIndexString += " | ";
                     } else {
-                        tempSymbolString += String.fromCharCode(parseInt(hexSymbols[diskSymbols[i][j].index].replace('&#x', '').replace(';', ''), 16)) + " ";
+                        tempSymbolString += String.fromCharCode(parseInt(hexSymbols[diskSymbols[i][j].index].replace('&#x', '').replace(';', ''), encodeInt)) + " ";
                         tempIndexString += diskSymbols[i][j].index + " ";
 
                         if(subTracker[diskSymbols[i][j].index] === "Subbed"){
