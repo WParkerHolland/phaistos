@@ -173,7 +173,7 @@
                         tempSubString += " | ";
                         tempIndexString += " | ";
                     } else {
-                        tempSymbolString += String.fromCharCode(parseInt(hexSymbols[diskSymbols[i][j].index].replace('&#x', '').replace(';', ''), 16)) + " ";
+                        tempSymbolString += String.fromCharCode(parseInt(hexSymbols[diskSymbols[i][j].index].replace('&#x', '').replace(';', ''), 15)) + " ";
                         tempIndexString += diskSymbols[i][j].index + " ";
 
                         if(subTracker[diskSymbols[i][j].index] === "Subbed"){
