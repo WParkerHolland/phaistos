@@ -17,22 +17,16 @@
         <option value="default">Default</option>
         <option value="vegas">Vegas</option>
     </select>
-    
-    <label for="encodeInt">Encoding Integer:</label>
-    <button onclick="decrementEncodeInt()">-</button>
-    <span id="encodeIntDisplay">16</span>
-    <button onclick="incrementEncodeInt()">+</button>
 
     <br><br>
 
     <button onclick="createHangman()">Create Hangman</button>
     <h2>Created Hangman Combination</h2>
-    <div id="hangman" style="font-size:1em;"></div>
+    <pre id="hangman"></pre>
 
     <script>
         let uploadedFile;
         let diskMode = "default";
-        let encodeInt = 16;
 
         class PhaistosSymbol {
             constructor(index, vegas = false, capital = false, vowel = false) {
@@ -59,20 +53,6 @@
             console.log('Disk mode changed to:', diskMode);
         }
 
-        function incrementEncodeInt() {
-            encodeInt++;
-            document.getElementById('encodeIntDisplay').innerText = encodeInt;
-            console.log('Encoding integer incremented to:', encodeInt);
-        }
-
-        function decrementEncodeInt() {
-            if (encodeInt > 1) {
-                encodeInt--;
-                document.getElementById('encodeIntDisplay').innerText = encodeInt;
-                console.log('Encoding integer decremented to:', encodeInt);
-            }
-        }
-
         function createHangman() {
             if (!uploadedFile) {
             console.log('No file uploaded');
@@ -83,7 +63,7 @@
             reader.onload = function(event) {
                 const fileContent = event.target.result;
                 var uniqueContent = hangmanForWebsite(fileContent);
-                document.getElementById('hangman').innerText = uniqueContent;
+                document.getElementById('hangman').innerHTML = uniqueContent;
             };
 
             reader.readAsText(uploadedFile);
@@ -163,7 +143,7 @@
             possibleSymbols = ['κ', 'χ', 'ι', 'γ', 'π', 'φ', 'β', 'υ', 'τ', 'θ', 'δ', '῾', 'λ', 'μ', 'ν', 'γ', 'ρ', 'ῤ', 'σ', 'ζ', 'ξ', 'ψ', 'ζ', 'ᾰ', 'ᾱ', 'η', 'ε', "ει", 'ῐ', 'ῑ', 'ω', 'ο', "ου", 'ῠ', 'ῡ', "αι", "αυ", "ει", "ευ", "οι", "υι", 'ᾳ', 'ῃ', 'ῳ'];
             possibleVegasSymbols = ['α', 'ε', 'η', 'ι', 'o', 'υ', 'ω', 'σ', 'ρ', 'ν'];
             possibleVowelSymbols = ['α', 'ε', 'η', 'ι', 'o', 'υ', 'ω'];
-            hexSymbols = ["", "&#x101D0;", "&#x101D1;", "&#x101D2;", "&#x101D3;", "&#x101D4;", "&#x101D5;", "&#x101D6;", "&#x101D7;", "&#x101D8;", "&#x101D9;", "&#x101DA;", "&#x101DB;", "&#x101DC;", "&#x101DD;", "&#x101DE;", "&#x101DF;", "&#x101E0;", "&#x101E1;", "&#x101E2;", "&#x101E3;", "&#x101E4;", "&#x101E5;", "&#x101E6;", "&#x101E7;", "&#x101E8;", "&#x101E9;", "&#x101EA;", "&#x101EB;", "&#x101EC;", "&#x101ED;", "&#x101EE;", "&#x101EF;", "&#x101F0;", "&#x101F1;", "&#x101F2;", "&#x101F3;", "&#x101F4;", "&#x101F5;", "&#x101F6;", "&#x101F7;", "&#x101F8;", "&#x101F9;", "&#x101FA;", "&#x101FB;", "&#x101FC;", "#"];
+            hexSymbols = ["", "&#x101D0", "&#x101D1", "&#x101D2", "&#x101D3", "&#x101D4", "&#x101D5", "&#x101D6", "&#x101D7", "&#x101D8", "&#x101D9", "&#x101DA", "&#x101DB", "&#x101DC", "&#x101DD", "&#x101DE", "&#x101DF", "&#x101E0", "&#x101E1", "&#x101E2", "&#x101E3", "&#x101E4", "&#x101E5", "&#x101E6", "&#x101E7", "&#x101E8", "&#x101E9", "&#x101EA", "&#x101EB", "&#x101EC", "&#x101ED", "&#x101EE", "&#x101EF", "&#x101F0", "&#x101F1", "&#x101F2", "&#x101F3", "&#x101F4", "&#x101F5", "&#x101F6", "&#x101F7", "&#x101F8", "&#x101F9", "&#x101FA", "&#x101FB", "&#x101FC", "#"];
             singleSubs = Array.from({length: 47}, (_, i) => "Unsubstituted");
             subTracker = Array.from({length: 47}, (_, i) => "Unsubstituted");
             substitutions = substitutions.split(',');
@@ -193,7 +173,7 @@
                         tempSubString += " | ";
                         tempIndexString += " | ";
                     } else {
-                        tempSymbolString += String.fromCharCode(parseInt(hexSymbols[diskSymbols[i][j].index].replace('&#x', '').replace(';', ''), encodeInt)) + " ";
+                        tempSymbolString += hexSymbols[diskSymbols[i][j].index] + " ";
                         tempIndexString += diskSymbols[i][j].index + " ";
 
                         if(subTracker[diskSymbols[i][j].index] === "Subbed"){
