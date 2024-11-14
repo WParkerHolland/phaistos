@@ -10,6 +10,7 @@
     <h1>Phaistos Disc Decoding Tool</h1>
     <input type="file" id="fileInput">
     <button onclick="storeFile()">Upload File</button>
+
     <br><br>
     
     <label for="diskModeSelect">Select Disk Mode:</label>
@@ -20,6 +21,75 @@
 
     <br><br>
 
+    <button onclick="showDetailView()" id="detailButton">Show Detailed View</button>
+    <br>
+
+    <div hidden id="detailedView">
+        <h3>Detailed Substitution View</h3>
+        <button onclick="clearSubstitutions()">Clear Substitutions</button>
+        <br><br>
+        <div>
+            <pre style="display: inline;">&#x101D0:</pre> <input type="text" id="substitution1" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101D1:</pre> <input type="text" id="substitution2" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101D2:</pre> <input type="text" id="substitution3" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101D3:</pre> <input type="text" id="substitution4" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101D4:</pre> <input type="text" id="substitution5" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101D5:</pre> <input type="text" id="substitution6" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101D6:</pre> <input type="text" id="substitution7" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101D7:</pre> <input type="text" id="substitution8" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101D8:</pre> <input type="text" id="substitution9" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101D9:</pre> <input type="text" id="substitution10" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101DA:</pre> <input type="text" id="substitution11" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101DB:</pre> <input type="text" id="substitution12" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+        </div>
+        <br>
+        <div>
+            <pre style="display: inline;">&#x101DC:</pre> <input type="text" id="substitution13" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101DD:</pre> <input type="text" id="substitution14" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101DE:</pre> <input type="text" id="substitution15" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101DF:</pre> <input type="text" id="substitution16" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101E0:</pre> <input type="text" id="substitution17" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101E1:</pre> <input type="text" id="substitution18" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101E2:</pre> <input type="text" id="substitution19" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101E3:</pre> <input type="text" id="substitution20" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101E4:</pre> <input type="text" id="substitution21" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101E5:</pre> <input type="text" id="substitution22" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101E6:</pre> <input type="text" id="substitution23" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101E7:</pre> <input type="text" id="substitution24" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+        </div>
+        <br>
+        <div>
+            <pre style="display: inline;">&#x101E8:</pre> <input type="text" id="substitution25" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101E9:</pre> <input type="text" id="substitution26" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101EA:</pre> <input type="text" id="substitution27" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101EB:</pre> <input type="text" id="substitution28" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101EC:</pre> <input type="text" id="substitution29" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101ED:</pre> <input type="text" id="substitution30" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101EE:</pre> <input type="text" id="substitution31" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101EF:</pre> <input type="text" id="substitution32" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101F0:</pre> <input type="text" id="substitution33" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101F1:</pre> <input type="text" id="substitution34" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101F2:</pre> <input type="text" id="substitution35" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101F3:</pre> <input type="text" id="substitution36" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+        </div>
+        <br>
+        <div>
+            <pre style="display: inline;">&#x101F4:</pre> <input type="text" id="substitution37" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101F5:</pre> <input type="text" id="substitution38" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101F6:</pre> <input type="text" id="substitution39" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101F7:</pre> <input type="text" id="substitution40" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101F8:</pre> <input type="text" id="substitution41" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101F9:</pre> <input type="text" id="substitution42" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101FA:</pre> <input type="text" id="substitution43" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101FB:</pre> <input type="text" id="substitution44" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <pre style="display: inline;">&#x101FC:</pre> <input type="text" id="substitution45" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
+            <!--- For some reason substitions for the damage mark does not work, this can be a future thing to fix and look into -->
+            <!--- <pre style="display: inline;">Damage:</pre> <input type="text" id="substitution46" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre> -->
+        </div>
+    </div>
+
+    <br><br>
+
     <button onclick="createHangman()">Create Hangman</button>
     <h2>Created Hangman Combination</h2>
     <pre id="hangman" style="font-size:2em"></pre>
@@ -27,6 +97,7 @@
     <script>
         let uploadedFile;
         let diskMode = "default";
+        let detailedMode = false;
 
         class PhaistosSymbol {
             constructor(index, vegas = false, capital = false, vowel = false) {
@@ -51,6 +122,19 @@
             const selectElement = document.getElementById('diskModeSelect');
             diskMode = selectElement.value;
             console.log('Disk mode changed to:', diskMode);
+        }
+
+        function showDetailView() {
+            const detailedView = document.getElementById('detailedView');
+            detailedMode = !detailedMode;
+            detailedView.hidden = !detailedMode;
+            detailButton.innerText = detailedMode ? 'Hide Detailed View' : 'Show Detailed View';
+        }
+
+        function clearSubstitutions(){
+            for(let i = 1; i <= 46; i++){
+                document.getElementById('substitution' + i).value = '';
+            }
         }
 
         function createHangman() {
@@ -96,16 +180,26 @@
             });
 
             // Select a random substitution from each list and pass it to hangman creation function
-            const substitutions = subList.slice(1).map(list => {
-                if(list.length === 1){
-                    return "Unsubstituted";
+            let substitutions = [];
+            for (let i = 1; i < subList.length; i++) {
+                // If there is a substitution override in the detailed view, use that
+                let override = document.getElementById('substitution' + i).value;
+                if(override !== ''){
+                    substitutions.push(override);
+                // If the list only contains the index, there are no substitutions
+                } else if (subList[i].length === 1) {
+                    substitutions.push("Unsubstituted");
+                // There must be a list of substitutions to choose from, select on randomly
+                } else {
+                    const randomIndex = Math.floor(Math.random() * subList[i].length + 1);
+                    if (subList[i][randomIndex] === undefined) {
+                        substitutions.push(subList[i][randomIndex - 1]);
+                    } else {
+                        substitutions.push(subList[i][randomIndex]);
+                    }
                 }
-                const randomIndex = Math.floor(Math.random() * list.length + 1);
-                if(list[randomIndex] === undefined) {
-                    return list[randomIndex - 1];
-                }
-                return list[randomIndex];
-            }).join(',');
+            }
+            substitutions = substitutions.join(',');
 
             return hangmanSubstitution(substitutions, diskMode);
         }
