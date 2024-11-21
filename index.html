@@ -319,6 +319,7 @@
             const cleanedRows = rows.map(row => {
                 return row.split(',').map(cell => cell.trim() === 'NA' || cell.trim() === 'NaN' ? '' : cell).join(',');
             });
+            
             const columns = [];
             const numColumns = cleanedRows[0].split(',').length;
             for (let i = 0; i < numColumns; i++) {
@@ -344,40 +345,40 @@
             for (let i = 1; i < subList.length; i++) {
                 // If there is a substitution override in the detailed view, use that
                 let override = document.getElementById('substitution' + i).value;
+                let tempSubList = subList[i];
+                console.log("Sub List for " + i + " is: " + tempSubList);
+
                 if(override !== ''){
                     substitutions.push(override);
                 // If the list only contains the index, there are no substitutions
-                } else if (subList[i].length === 1) {
+                } else if (tempSubList.length === 1) {
                     substitutions.push("Unsubstituted");
                 // There must be a list of substitutions to choose from, select on randomly
                 } else {
-                    let randomIndex = Math.floor(Math.random() * subList[i].length + 1);
+                    let randomIndex = Math.floor(Math.random() * tempSubList.length);
                     let tempSub = '';
-                    if (subList[i][randomIndex] === undefined) {
-                                substitutions.push(subList[i][randomIndex - 1]);
-                            } else {
-                                substitutions.push(subList[i][randomIndex]);
-                            }
+
                     // Check if the substitution is being excluded
                     try{
-                        const exclusions = document.getElementById('exclusion' + i).value.split(',');
-                        if(exclusions.length < subList[i].length - 1){
-                            while(tempSub === '' || exclusions.includes(tempSub)){
-                                randomIndex = Math.floor(Math.random() * subList[i].length + 1);
-                                if (subList[i][randomIndex] === undefined) {
-                                    tempSub = subList[i][randomIndex - 1];
-                                } else {
-                                    tempSub = subList[i][randomIndex];
-                                }
+                        const exclusions = document.getElementById('exclusion' + i).value;
+                        console.log("Exclusions for " + i + " are: " + exclusions);
+                        while(tempSub === '' || exclusions.includes(tempSub)){
+                            randomIndex = Math.floor(Math.random() * tempSubList.length);
+                            if (tempSubList[randomIndex] === undefined) {
+                                tempSub = tempSubList[randomIndex - 1];
+                            } else {
+                                tempSub = tempSubList[randomIndex];
                             }
-                        } else {
-                            throw 'No valid substitutions';
+                            if(i === 3){
+                                console.log("Im over here");
+                            }
                         }
-                    } catch {
-                        if (subList[i][randomIndex] === undefined) {
-                            tempSub = subList[i][randomIndex - 1];
+                    } catch(e) {
+                        console.log(e)
+                        if (tempSubList[randomIndex] === undefined) {
+                            tempSub = tempSubList[randomIndex - 1];
                         } else {
-                            tempSub = subList[i][randomIndex];
+                            tempSub = tempSubList[randomIndex];
                         }
                     }
 
