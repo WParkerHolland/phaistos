@@ -360,20 +360,21 @@
 
                     // Check if the substitution is being excluded
                     try{
-                        const exclusions = document.getElementById('exclusion' + i).value.split(',');
-                        if(exclusions.length < tempSubList.length - 1){
-                            while(tempSub === '' || exclusions.includes(tempSub)){
-                                randomIndex = Math.floor(Math.random() * tempSubList[i].length);
-                                if (tempSubList[randomIndex] === undefined) {
-                                    tempSub = tempSubList[randomIndex - 1];
-                                } else {
-                                    tempSub = tempSubList[randomIndex];
-                                }
+                        const exclusions = document.getElementById('exclusion' + i).value;
+                        console.log("Exclusions for " + i + " are: " + exclusions);
+                        while(tempSub === '' || exclusions.includes(tempSub)){
+                            randomIndex = Math.floor(Math.random() * tempSubList.length);
+                            if (tempSubList[randomIndex] === undefined) {
+                                tempSub = tempSubList[randomIndex - 1];
+                            } else {
+                                tempSub = tempSubList[randomIndex];
                             }
-                        } else {
-                            throw 'No valid substitutions';
+                            if(i === 3){
+                                console.log("Im over here");
+                            }
                         }
-                    } catch {
+                    } catch(e) {
+                        console.log(e)
                         if (tempSubList[randomIndex] === undefined) {
                             tempSub = tempSubList[randomIndex - 1];
                         } else {
@@ -385,7 +386,6 @@
                 }
             }
             substitutions = substitutions.join(',');
-            console.log("Substitutions: " + substitutions);
 
             return hangmanSubstitution(substitutions, diskMode);
         }
