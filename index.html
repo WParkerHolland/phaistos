@@ -88,7 +88,7 @@
                 <!--- <pre style="display: inline;">Damage:</pre> <input type="text" id="substitution46" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre> -->
             </div>
             <br>
-            <div> <!--- Subscript Override Text Entries-->
+            <div> <!-- Subscript Override Text Entries-->
                 <div style="font-size: 1em;">Subscript Override</div>
                 <pre style="display: inline;">&#x101D0:</pre> <input type="text" id="substitution1S" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
                 <pre style="display: inline;">&#x101D4:</pre> <input type="text" id="substitution5S" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
@@ -100,6 +100,61 @@
                 <pre style="display: inline;">&#x101FA:</pre> <input type="text" id="substitution43S" placeholder="" style="display: inline; width: 2em;"> <pre style="display:inline;">  </pre>
 
             </div>
+            <br>
+            <div> <!-- Character Exclusion Entries-->
+                <div style="font-size: 1em;">Character Exclusions</div>
+                <select id="addExclusionDropdown" onchange="addExclusion()">
+                    <option value="default">Select Symbol to make Exclusion For</option>
+                    <option value="1">&#x101D0;</option>
+                    <option value="2">&#x101D1;</option>
+                    <option value="3">&#x101D2;</option>
+                    <option value="4">&#x101D3;</option>
+                    <option value="5">&#x101D4;</option>
+                    <option value="6">&#x101D5;</option>
+                    <option value="7">&#x101D6;</option>
+                    <option value="8">&#x101D7;</option>
+                    <option value="9">&#x101D8;</option>
+                    <option value="10">&#x101D9;</option>
+                    <option value="11">&#x101DA;</option>
+                    <option value="12">&#x101DB;</option>
+                    <option value="13">&#x101DC;</option>
+                    <option value="14">&#x101DD;</option>
+                    <option value="15">&#x101DE;</option>
+                    <option value="16">&#x101DF;</option>
+                    <option value="17">&#x101E0;</option>
+                    <option value="18">&#x101E1;</option>
+                    <option value="19">&#x101E2;</option>
+                    <option value="20">&#x101E3;</option>
+                    <option value="21">&#x101E4;</option>
+                    <option value="22">&#x101E5;</option>
+                    <option value="23">&#x101E6;</option>
+                    <option value="24">&#x101E7;</option>
+                    <option value="25">&#x101E8;</option>
+                    <option value="26">&#x101E9;</option>
+                    <option value="27">&#x101EA;</option>
+                    <option value="28">&#x101EB;</option>
+                    <option value="29">&#x101EC;</option>
+                    <option value="30">&#x101ED;</option>
+                    <option value="31">&#x101EE;</option>
+                    <option value="32">&#x101EF;</option>
+                    <option value="33">&#x101F0;</option>
+                    <option value="34">&#x101F1;</option>
+                    <option value="35">&#x101F2;</option>
+                    <option value="36">&#x101F3;</option>
+                    <option value="37">&#x101F4;</option>
+                    <option value="38">&#x101F5;</option>
+                    <option value="39">&#x101F6;</option>
+                    <option value="40">&#x101F7;</option>
+                    <option value="41">&#x101F8;</option>
+                    <option value="42">&#x101F9;</option>
+                    <option value="43">&#x101FA;</option>
+                    <option value="44">&#x101FB;</option>
+                    <option value="45">&#x101FC;</option>
+                </select>
+                <ul id="exclusionList">
+
+                </ul>
+            </div>
         </div>
     </div>
 
@@ -109,71 +164,71 @@
     <h2>Created Hangman Combination</h2>
     <pre id="hangman"></pre>
     
-    <div id="outputTables" hidden>
-        <table border="0" id="table1" style="border-color: white; font-size: 1.5em; ">
+    <div id="outputTables" style="border-color: white; font-size: 1.5em;" hidden>
+        <table border="0" id="table1">
             <caption>Line 1A</caption>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
         </table>
         <br>
-        <table border="0" id="table2" style="border-color: white; font-size: 1.5em;">
+        <table border="0" id="table2">
             <caption>Line 2A</caption>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
         </table>
         <br>
-        <table border="0" id="table3" style="border-color: white; font-size: 1.5em;">
+        <table border="0" id="table3">
             <caption>Line 3A</caption>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
         </table>
         <br>
-        <table border="0" id="table4" style="border-color: white; font-size: 1.5em;">
+        <table border="0" id="table4">
             <caption>Line 4A</caption>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
         </table>
         <br>
-        <table border="0" id="table5" style="border-color: white; font-size: 1.5em;">
+        <table border="0" id="table5">
             <caption>Line 5A</caption>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
         </table>
         <br>
-        <table border="0" id="table6" style="border-color: white; font-size: 1.5em;">
+        <table border="0" id="table6">
             <caption>Line 1B</caption>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
         </table>
         <br>
-        <table border="0" id="table7" style="border-color: white; font-size: 1.5em;">
+        <table border="0" id="table7">
             <caption>Line 2B</caption>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
         </table>
         <br>
-        <table border="0" id="table8" style="border-color: white; font-size: 1.5em;">
+        <table border="0" id="table8">
             <caption>Line 3B</caption>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
         </table>
         <br>
-        <table border="0" id="table9" style="border-color: white; font-size: 1.5em;">
+        <table border="0" id="table9">
             <caption>Line 4B</caption>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
         </table>
         <br>
-        <table border="0" id="table10" style="border-color: white; font-size: 1.5em;">
+        <table border="0" id="table10">
             <caption>Line 5B</caption>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
             <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
@@ -223,6 +278,22 @@
             for(let i = 1; i <= 46; i++){
                 document.getElementById('substitution' + i).value = '';
             }
+        }
+
+        function addExclusion(){
+            const dropdown = document.getElementById('addExclusionDropdown');
+            const exclusionList = document.getElementById('exclusionList');
+            const selectedValue = dropdown.value;
+            if(selectedValue === 'default'){
+                return;
+            }
+            const listItem = document.createElement('li');
+            listItem.innerText = dropdown.options[dropdown.selectedIndex].text + ': ';
+            const input = document.createElement('input');
+            input.id = 'exclusion' + selectedValue;
+            listItem.appendChild(input);
+            exclusionList.appendChild(listItem);
+            dropdown.value = 'default';
         }
 
         function createHangman() {
@@ -280,12 +351,37 @@
                     substitutions.push("Unsubstituted");
                 // There must be a list of substitutions to choose from, select on randomly
                 } else {
-                    const randomIndex = Math.floor(Math.random() * subList[i].length + 1);
+                    let randomIndex = Math.floor(Math.random() * subList[i].length + 1);
+                    let tempSub = '';
                     if (subList[i][randomIndex] === undefined) {
-                        substitutions.push(subList[i][randomIndex - 1]);
-                    } else {
-                        substitutions.push(subList[i][randomIndex]);
+                                substitutions.push(subList[i][randomIndex - 1]);
+                            } else {
+                                substitutions.push(subList[i][randomIndex]);
+                            }
+                    // Check if the substitution is being excluded
+                    try{
+                        const exclusions = document.getElementById('exclusion' + i).value.split(',');
+                        if(exclusions.length < subList[i].length - 1){
+                            while(tempSub === '' || exclusions.includes(tempSub)){
+                                randomIndex = Math.floor(Math.random() * subList[i].length + 1);
+                                if (subList[i][randomIndex] === undefined) {
+                                    tempSub = subList[i][randomIndex - 1];
+                                } else {
+                                    tempSub = subList[i][randomIndex];
+                                }
+                            }
+                        } else {
+                            throw 'No valid substitutions';
+                        }
+                    } catch {
+                        if (subList[i][randomIndex] === undefined) {
+                            tempSub = subList[i][randomIndex - 1];
+                        } else {
+                            tempSub = subList[i][randomIndex];
+                        }
                     }
+
+                    substitutions.push(tempSub)
                 }
             }
             substitutions = substitutions.join(',');
@@ -343,7 +439,24 @@
             
             for(let i = 0; i < singleSubs.length; i++){
                 if(singleSubs[i] === "Unsubstituted"){
-                    singleSubs[i] = possibleSymbols[Math.floor(Math.random() * possibleSymbols.length)];
+                    let tempSub = '';
+                    try{
+                        const exclusions = document.getElementById('exclusion' + i).value.split(',');
+                        
+                        if(exclusions.length < possibleSymbols.length){
+                            while(tempSub === '' || exclusions.includes(tempSub)){
+                                tempSub = possibleSymbols[Math.floor(Math.random() * possibleSymbols.length)]
+                            }
+                        } else {
+                            console.log("Too many exclusions for index " + i);
+                            tempSub = possibleSymbols[Math.floor(Math.random() * possibleSymbols.length)];
+                        }
+
+                    } catch {
+                        tempSub = possibleSymbols[Math.floor(Math.random() * possibleSymbols.length)];
+                    }
+
+                    singleSubs[i] = tempSub;
                 }
             }
 
