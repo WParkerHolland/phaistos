@@ -17,6 +17,7 @@ def greekToScansion(file_path):
     cltk_doc = cltk_nlp.analyze(file_content)
     tokens = cltk_doc.tokens
     clean_accents = Scansion()._clean_accents(tokens)
+
     syllables = Scansion()._make_syllables(clean_accents, byNewline=True)
     condensed = Scansion()._syllable_condenser(syllables, splitByLine=True)
     scanned = Scansion()._scansion(condensed)
@@ -204,3 +205,4 @@ def evaluateScansionRuntime():
 scans = greekToScansion("researchProject/texts/shortTheogeny.txt")
 matchesRight, matchesWrong = checkScansion(scans[0])
 displayMatches(scans[0], matchesRight, matchesWrong, scans[1])
+
