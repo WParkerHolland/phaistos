@@ -9,9 +9,11 @@ rightWay(S, I):-
     L = [['l','u','u','d','l','l','d','l','x'], 
         ['l','l','d','l','l','d','l','x']],
     I = 0; I = 1,
-    append([_, P, _], S),
     member(P, L),
-    checkSpecIndex(L, I, P).
+    checkSpecIndex(L, I, P),
+    append([X, P, Y], S),
+    not(X = P),
+    not(Y = P).
 
 wrongWay(S, I):-
     L = [['l','l','d','l','l','d','l','l','d'], 
