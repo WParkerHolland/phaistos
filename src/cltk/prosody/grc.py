@@ -215,7 +215,7 @@ class Scansion:
         return sentences
 
     @staticmethod
-    def _syllable_condenser(words_syllables: list[list[list[str]]]) -> list[list[str]]:
+    def _syllable_condenser(words_syllables: list[list[list[str]]], splitByLine = False) -> list[list[str]]:
         """Reduce a list of ``[sentence[word[syllable]]]`` to ``[sentence[syllable]]``.
 
         Args:
@@ -230,11 +230,16 @@ class Scansion:
         [['νε', 'ος', 'μεν', 'και', 'α', 'πει', 'ρος', 'δι', 'κων', 'ε', 'γω', 'γε', 'ε', 'τι'], ['μεν', 'και', 'α', 'πει', 'ρος']]
         """
         sentences_syllables = list()
-        for sentence in words_syllables:
-            syllables_sentence: list[str] = list()
-            for word in sentence:
-                syllables_sentence += word
-            sentences_syllables.append(syllables_sentence)
+        if(splitByLine):
+            for sentence in words_syllables:
+                for word in sentence:
+                    sentences_syllables.append(word)
+        else:    
+            for sentence in words_syllables:
+                syllables_sentence: list[str] = list()
+                for word in sentence:
+                    syllables_sentence += word
+                sentences_syllables.append(syllables_sentence)
         return sentences_syllables
 
     def _long_by_nature(self, syllable: str) -> bool:
@@ -306,6 +311,107 @@ class Scansion:
             )
         return False
 
+    def _scansionHelper(self, line: list[str], position: int, currentFoot: int) -> list[str]:
+        # Recursive Function to develop a scansion for a single line
+        # Line is list of syllables, position is the current syllable index
+        # currentFoot is the current foot index, scansion is the scansion being developed
+
+        # Check if two many feet in line
+        tempLine = line.copy()
+
+        if(currentFoot == 6):
+            if(len(line[position:]) == 2):
+                tempLine[position] = '¯'
+                tempLine[position + 1] = 'X'
+                return tempLine
+            # Check if less than or greater than 2 syllables left
+            else:
+                raise Exception("Too many feet in line")
+                
+
+        # If syllable unknown
+        if line[position] == '?':
+            # If next syllable long, its a spondee
+            if line[position + 1] == '¯':
+                try:
+                    tempLine[position] = '¯'
+                    return self._scansionHelper(tempLine, position + 2, currentFoot + 1)
+                except Exception as e:
+                    if(str(e) == "Too many feet in line" and line[position + 2] == '?'):
+                        line[position] = '¯'
+                        line[position + 1] = '˘'
+                        line[position + 2] = '˘'
+                        return self._scansionHelper(line, position + 3, currentFoot + 1)
+                    else:
+                        raise e
+            # If next two syllable unknown, most likely a dactyl
+            # Consider putting a try except statement in to try spondee if error, depends on accuracy of function
+            elif line[position + 1] == '?' and line[position + 2] == '?':
+                try:
+                    tempLine[position] = '¯'
+                    tempLine[position + 1] = '˘'
+                    tempLine[position + 2] = '˘'
+                    return self._scansionHelper(tempLine, position + 3, currentFoot + 1)
+                except Exception as e:
+                    if(str(e) == "End of line reached too early"):
+                        line[position] = '¯'
+                        line[position + 1] = '¯'
+                        return self._scansionHelper(line, position + 2, currentFoot + 1)
+                    else:
+                        raise e
+            # If next syllable unknown and following syllable long, its probably a spondee
+            elif line[position + 1] == '?' and line[position + 2] == '¯':
+                tempLine[position] = '¯'
+                tempLine[position + 1] = '¯'
+                return self._scansionHelper(tempLine, position + 2, currentFoot + 1)
+        
+        # If syllable is known long
+        elif line[position] == '¯':
+            # If next syllable long, its a spondee
+            # If an error is encountered, it may be a dactyl because of epic correption
+            if line[position + 1] == '¯':
+                try:
+                    tempLine[position + 1] = '¯'
+                    return self._scansionHelper(tempLine, position + 2, currentFoot + 1)
+                except Exception as e:
+                    if(str(e) == "Too many feet in line" and line[position + 2] == '?'):
+                        line[position + 1] = '˘'
+                        line[position + 2] = '˘'
+                        return self._scansionHelper(line, position + 3, currentFoot + 1)
+                    else:
+                        raise e
+            # If next two syllable unknown, most likely a dactyl
+            # Unless run out of syllables, then it's a spondee
+            # Consider including way to notify user of this because it may be an outlier and interesting to the classicist
+            elif line[position + 1] == '?' and line[position + 2] == '?':
+                try:
+                    tempLine[position + 1] = '˘'
+                    tempLine[position + 2] = '˘'
+                    return self._scansionHelper(tempLine, position + 3, currentFoot + 1)
+                except Exception as e:
+                    if(str(e) == "End of line reached too early"):
+                        line[position + 1] = '¯'
+                        return self._scansionHelper(line, position + 2, currentFoot + 1)
+                    else:
+                        raise e
+            # If next syllable unknown and following syllable long, its a spondee
+            # Unless scansion runs out of lines, then it's a dactyl
+            # Consider including way to notify user of this because it may be an outlier and interesting to the classicist
+            elif line[position + 1] == '?' and line[position + 2] == '¯':
+                try:
+                    tempLine[position + 1] = '¯'
+                    return self._scansionHelper(tempLine, position + 2, currentFoot + 1)
+                except Exception as e:
+                    if(str(e) == "Too many feet in line"):
+                        line[position + 1] = '˘'
+                        line[position + 2] = '˘'
+                        return self._scansionHelper(line, position + 3, currentFoot + 1)
+                    else:
+                        raise e
+
+        # If the end of the line is reached too early
+        raise Exception("End of line reached too early")
+    
     def _scansion(self, sentence_syllables: list[list[str]]) -> list[str]:
         """Replace long and short values for each input syllable.
 
@@ -321,45 +427,28 @@ class Scansion:
         ['˘¯¯¯˘¯¯˘¯˘¯˘˘x', '¯¯˘¯x']
         """
         scanned_text = list()
+        errCounter = 0
         for sentence in sentence_syllables:
-            scanned_sent = list()
-            i = 0
-            dactylCounter = 0
-            while i < len(sentence):
-                dactylCounter += 1
 
-                try: 
-                    # Check for anceps (long, either)
-                    if dactylCounter == 6:
-                        scanned_sent.append("¯X|")
-                        i += 2                
-                        dactylCounter = 0
-                    else:
-                        # Check for spondees (long, long)
-                        if self._long_by_nature(sentence[i + 1]) or self._long_by_position(i + 1, sentence[i + 1], sentence):
-                            scanned_sent.append("¯¯|")
-                            i += 2
-                        # Check for dactyls (long, short, short)
-                        else:
-                            # Check for impossible pattern (long, short, long)
-                            if self._long_by_nature(sentence[i + 2]) or self._long_by_position(i + 2, sentence[i + 2], sentence):
-                                scanned_sent.append("¯¯|")
-                                i += 2
-                            else:
-                                scanned_sent.append("¯˘˘|")
-                                i += 3
-                        
-                except IndexError:
-                     print("Error in {}".format(sentence))
-                     i += 1
+            line = ['?'] * len(sentence)
+            line[0] = '¯'
+            line[len(sentence) - 1] = 'X'
+            for i in range(1, len(sentence) - 1):
+                if self._long_by_nature(sentence[i]) or self._long_by_position(i, sentence[i], sentence):
+                    line[i] = '¯'
 
-            if len(scanned_sent) > 1:
-                del scanned_sent[-1]
-            #scanned_sent.append("¯X|")
-            scanned_text.append("".join(scanned_sent))
+            try:
+                tempLine = line.copy()
+                scanned_text.append(self._scansionHelper(line, 0, 1))
+            except:
+                print(str(errCounter) + ' ' + str(tempLine))
+                print(sentence)
+
+            errCounter += 1
+
         return scanned_text
 
-    def _make_syllables(self, sentences_words: str) -> list[list[list[str]]]:
+    def _make_syllables(self, sentences_words: str, byNewline = False) -> list[list[list[str]]]:
         """First tokenize, then divide word tokens into a list of syllables.
         Note that a syllable in this instance is defined as a vocalic
         group (i.e., vowel or a diphthong). This means that all
@@ -390,6 +479,12 @@ class Scansion:
                 cur_letter_in = 0  # Begins general iterator
                 while cur_letter_in < len(word):
                     letter = word[cur_letter_in]
+                    if(letter == '\n' and byNewline):
+                        # Words are being split across lines, 
+                        # When newline encountered, find way to end word sentence and start new one
+                        if(len(syll_per_word) > 0):
+                            syll_per_sent.append(syll_per_word)
+                            syll_per_word = []
                     if (cur_letter_in != len(word) - 1) and (
                         word[cur_letter_in] + word[cur_letter_in + 1]
                     ) in self.diphthongs:

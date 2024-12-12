@@ -8,7 +8,6 @@ def greekToScansion(file_path):
     import sys
     sys.path.append("cltk")
 
-    scanner = Scansion()
     with open(file_path, 'r', encoding="utf8") as file:
         file_content = file.read()
 
@@ -18,62 +17,68 @@ def greekToScansion(file_path):
     cltk_doc = cltk_nlp.analyze(file_content)
     tokens = cltk_doc.tokens
     clean_accents = Scansion()._clean_accents(tokens)
-    syllables = Scansion()._make_syllables(clean_accents)
-    condensed = Scansion()._syllable_condenser(syllables)
+
+    syllables = Scansion()._make_syllables(clean_accents, byNewline=True)
+    condensed = Scansion()._syllable_condenser(syllables, splitByLine=True)
     scanned = Scansion()._scansion(condensed)
-    return scanned, condensed, clean_accents
+    return scanned, condensed, clean_accents, syllables
 
 def makePresentable(scansion):
     # This function is used to make the scansion output more presentable
     newScansion = ""
-    for sentence in scansion:
-        for syllable in sentence:
-            match syllable:
-                case "¯":
-                    newScansion += "- "
-                case "˘":
-                    newScansion += "u "
-                case "|":
-                    if newScansion[len(newScansion) - 1] != "\n":
-                        newScansion += "| "
-                case _:
-                    newScansion += "x\n"
+    for line in scansion:
+        for foot in line:
+            for syllable in foot:
+                match syllable:
+                    case "¯":
+                        newScansion += "- "
+                    case "˘":
+                        newScansion += "u "
+                    case "|":
+                        if newScansion[len(newScansion) - 1] != "\n":
+                            newScansion += "| "
+                    case _:
+                        newScansion += "x\n"
     return newScansion
 
 def makeMorePresentable(scansion, syllables):
+    # Combine syllables into proper format
+    tempList = []
+    for grouping in syllables:
+        tempList += grouping
+    syllables = tempList
+
     # This function will make the scansion output more presentable while also displaying how each syllable was classified
-    syllOffset = 0
+    lineOffset = 0
     finString = ""
-    for sentence in scansion:
+    for line in scansion:
         syllI = 0
         scanSent = ""
         syllSent = ""
-
-        for syllable in sentence:
-            match syllable:
-                case "¯":
-                    scanSent += "- "
-                    syllSent += str(syllables[syllOffset][syllI]) + " "
-                    syllI += 1
-                case "˘":
-                    scanSent += "u "
-                    syllSent += str(syllables[syllOffset][syllI]) + " "
-                    syllI += 1
-                case "|":
-                    if scanSent != "":
+        for foot in line:
+            for syllable in foot:
+                match syllable:
+                    case "¯":
+                        scanSent += "- "
+                        syllSent += str(syllables[lineOffset][syllI]) + " "
+                        syllI += 1
+                    case "˘":
+                        scanSent += "u "
+                        syllSent += str(syllables[lineOffset][syllI]) + " "
+                        syllI += 1
+                    case "|":
                         scanSent += "| "
                         syllSent += "| "
-                case _:
-                    scanSent += "x"
-                    syllSent += str(syllables[syllOffset][syllI]) + " "
-                    syllI += 1
-                    syllSent = syllSent.replace("\n", "\\n")
-                    finString += scanSent + "\n"
-                    finString += syllSent + "\n"
-                    scanSent = ""
-                    syllSent = ""
+                    case _:
+                        scanSent += "x"
+                        syllSent += str(syllables[lineOffset][syllI]) + " "
+                        syllSent = syllSent.replace("\n", "\\n")
+                        finString += scanSent + "\n"
+                        finString += syllSent + "\n\n"
+                        scanSent = ""
+                        syllSent = ""
         
-        syllOffset += 1
+        lineOffset += 1
     return finString
 
 def makeSyllablesPresentable(syllables):
@@ -100,61 +105,104 @@ def makePrologPresentable(scansion):
                     newScansion.append("x")
     return newScansion
 
-def checkScansion(scansion):
+def checkLineRight(line, patterns):
+    # Checks an individual line for any of the pattern provided
+    # Returns true or false, whether it contains the line or not, and the pattern matched
+    for i in range(len(patterns)):
+        patternLength = len(line) - len(patterns[i])
+        if(line[patternLength:] == patterns[i]):
+            return True, patterns[i]
+        
+    return False, 0
+
+def checkLineWrong(line, patterns):
+    # Checks an individual line for any of the pattern provided
+    # Returns true or false, whether it contains the line or not, and the pattern matched
+    for i in range(len(patterns)):
+        patternLength = len(patterns[i])
+        if(line[0:patternLength] == patterns[i]):
+            return True, patterns[i]
+
+    return False, 0
+
+def checkScansion(scansion, prolog=False):
     # This checks the scansion for any of the patterns we're looking for
     # Will return a 2 lists of sentence indexes with the patterns found within, one for right way patterns and one for wrong way patterns
     # [[SentenceIndex, PatternIndex], ...] is the format of the returned list
-    import janus_swi as janus
-    janus.consult("prolog/scansion.pl")
     returnListRight = []
     returnListWrong = []
 
-    for i in range(len(scansion)):
-        tempSentence = makePrologPresentable(scansion[i])
+    if(prolog):
+        import janus_swi as janus
+        janus.consult("prolog/scansion.pl")
 
-        # Check for patterns found while reading the right way
-        tempObjRight = janus.query_once("rightWay({}, X)".format(tempSentence))
-        if(tempObjRight["truth"]):
-            returnListRight.append([i, tempObjRight["X"]])
+        for i in range(len(scansion)):
+            tempSentence = makePrologPresentable(scansion[i])
 
-        # Check for patterns found while reading the wrong way
-        tempObjWrong = janus.query_once("wrongWay({}, X)".format(tempSentence))
-        if(tempObjWrong["truth"]):
-            returnListWrong.append([i, tempObjWrong["X"]])
+            # Check for patterns found while reading the right way
+            tempObjRight = janus.query_once("rightWay({}, X)".format(tempSentence))
+            if(tempObjRight["truth"]):
+                returnListRight.append([i, tempObjRight["X"]])
+
+            # Check for patterns found while reading the wrong way
+            tempObjWrong = janus.query_once("wrongWay({}, X)".format(tempSentence))
+            if(tempObjWrong["truth"]):
+                returnListWrong.append([i, tempObjWrong["X"]])
+    else:
+        for i in range(len(scansion)):
+            tempSentence = scansion[i]
+
+            # Check for patterns found while reading the right way
+            rightPatterns = [['¯','˘','˘','¯','¯','¯','X'], ['¯','¯','¯','¯','¯','X']]
+            tempObjRight = checkLineRight(tempSentence, rightPatterns)
+            if(tempObjRight[0]):
+                returnListRight.append([i, tempObjRight[1]])
+
+            # Check for patterns found while reading the wrong way
+            wrongPatterns = [['¯','¯','¯','¯','¯','¯'], ['¯','˘','˘','¯','¯','¯','¯'], ['¯','˘','˘','¯','¯','¯','˘','˘'], ['¯','¯','¯','¯','¯','˘','˘']]
+            tempObjWrong = checkLineWrong(tempSentence, wrongPatterns)
+            if(tempObjWrong[0]):
+                returnListWrong.append([i, tempObjWrong[1]])
     
     return returnListRight, returnListWrong
     
-def displayMatches(scansion, matchesRight, matchesWrong, sentences):
+def displayMatches(scansion, matchesRight, matchesWrong, sentences, fileNameMod = ""):
     # This function displayes matches found in the scansion in a file
-    file = open("researchProject/output.txt", "w")
+    file = open("researchProject/outputs/scansion/output" + fileNameMod + ".txt", "w")
     if matchesRight == [] and matchesWrong == []:
         file.write(":(")
     else:
-        rightWayPatterns = ["- u u | - - | - x",
-                             "- - | - - | - x"]
-        wrongWayPatterns = ["- - | - - | - - |",
-                             "- u u | - - | - - |",
-                             "- u u | - - | - u u |",
-                             "- - | - - | - u u |"]
-        
         file.write("Matches found reading the right way:\n\n")
         for match in matchesRight:
             file.write("Match found in sentence {}:\n".format(match[0]))
-            file.write("Pattern found: {}\n".format(rightWayPatterns[match[1]]))
-            file.write("Sentence: {}\n\n".format(makeSyllablesPresentable(sentences[match[0]])))
-            file.write("Scansion: \n{}\n".format(makePresentable(scansion[match[0]])))
+            file.write("Pattern found: {}\n".format(match[1]))
+            file.write("Sentence: {}\n".format(makeSyllablesPresentable(sentences[match[0]]).replace("\n", "")))
+            file.write("Scansion: {}\n\n".format(makePresentable(scansion[match[0]])))
 
         file.write("\nMatches found reading the wrong way:\n\n")
         for match in matchesWrong:
             file.write("Match found in sentence {}:\n".format(match[0]))
-            file.write("Pattern found: {}\n".format(wrongWayPatterns[match[1]]))
-            file.write("Sentence: {}\n\n".format(makeSyllablesPresentable(sentences[match[0]])))
-            file.write("Scansion: \n{}\n".format(makePresentable(scansion[match[0]])))
+            file.write("Pattern found: {}\n".format(match[1]))
+            file.write("Sentence: {}\n".format(makeSyllablesPresentable(sentences[match[0]]).replace("\n", "")))
+            file.write("Scansion: {}\n\n".format(makePresentable(scansion[match[0]])))
     
     file.close()
 
+def evaluateScansionRuntime():
+    # This function is used to evaluate the runtime of the scansion function
+    import timeit
+    setup="from __main__ import greekToScansion"
+    wasteRun = timeit.timeit(lambda: greekToScansion('researchProject/texts/shortTheogeny.txt'), setup=setup, number=1)
+
+    time10 = timeit.timeit(lambda: greekToScansion('researchProject/texts/shortTheogeny.txt'), setup=setup, number=100)
+    time100 = timeit.timeit(lambda: greekToScansion('researchProject/texts/100Theogeny.txt'), setup=setup, number=100)
+    timeWhole = timeit.timeit(lambda: greekToScansion('researchProject/texts/theogeny.txt'), setup=setup, number=100)
+
+    print("10 Line Runtime: ", time10)
+    print("100 Line Runtime: ", time100)
+    print("Theogeny Runtime: ", timeWhole)
 
 scans = greekToScansion("researchProject/texts/shortTheogeny.txt")
-print(scans[2])
-#matchesRight, matchesWrong = checkScansion(scans[0])
-#displayMatches(scans[0], matchesRight, matchesWrong, scans[1])
+matchesRight, matchesWrong = checkScansion(scans[0])
+displayMatches(scans[0], matchesRight, matchesWrong, scans[1])
+
