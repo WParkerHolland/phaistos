@@ -8,8 +8,13 @@
 </head>
 <body>
     <h1>Phaistos Disc Decoding Tool</h1>
-    <input type="file" id="fileInput">
-    <button onclick="storeFile()">Upload File</button>
+    <div id="fileUpload">
+        <input type="file" id="fileInput">
+        <button onclick="storeFile()">Upload File</button>
+    </div>
+
+    <label for="toggleSwitch" id="toggleFileTag">Disable File Input:</label>
+    <input type="checkbox" id="toggleFileSwitch" onclick="toggleFileInput()">
 
     <br><br>
     
@@ -101,7 +106,7 @@
 
             </div>
             <br>
-            <div> <!-- Character Exclusion Entries-->
+            <div id="exclusionDiv"> <!-- Character Exclusion Entries-->
                 <div style="font-size: 1em;">Character Exclusions</div>
                 <select id="addExclusionDropdown" onchange="addExclusion()">
                     <option value="default">Select Symbol to make Exclusion For</option>
@@ -296,21 +301,29 @@
             dropdown.value = 'default';
         }
 
-        function createHangman() {
-            if (!uploadedFile) {
-            console.log('No file uploaded');
-            return;
-            }
+        function toggleFileInput() {
+            const isChecked = document.getElementById('toggleFileSwitch').checked;
+            document.getElementById('fileUpload').hidden = isChecked;
+            document.getElementById('toggleFileTag').innerText = isChecked ? 'Enable File Input:' : 'Disable File Input:';
+        }
 
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const fileContent = event.target.result;
-                var uniqueContent = hangmanForWebsite(fileContent);
+        function createHangman() {
+            if (!uploadedFile || document.getElementById('toggleFileSwitch').checked) {
+                console.log('No file uploaded, using empty input');
+                const emptyInput = "Symbol,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45"
+                var uniqueContent = hangmanForWebsite(emptyInput);
                 document.getElementById('hangman').innerHTML = uniqueContent;
-            };
-            
+            } else {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const fileContent = event.target.result;
+                    console.log(fileContent);
+                    var uniqueContent = hangmanForWebsite(fileContent);
+                    document.getElementById('hangman').innerHTML = uniqueContent;
+                };
+                reader.readAsText(uploadedFile);
+            }
             document.getElementById('outputTables').hidden = false;
-            reader.readAsText(uploadedFile);
         }
 
         function hangmanForWebsite(fileContent) {
@@ -346,7 +359,6 @@
                 // If there is a substitution override in the detailed view, use that
                 let override = document.getElementById('substitution' + i).value;
                 let tempSubList = subList[i];
-                console.log("Sub List for " + i + " is: " + tempSubList);
 
                 if(override !== ''){
                     substitutions.push(override);
