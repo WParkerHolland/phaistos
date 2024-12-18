@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://pyscript.net/releases/2024.10.2/core.css">
     <script type="module" src="https://pyscript.net/releases/2024.10.2/core.js"></script>
 </head>
-<body>
+<body onload="installFont()">
     <h1>Phaistos Disc Decoding Tool</h1>
     <div id="fileUpload">
         <input type="file" id="fileInput">
@@ -344,22 +344,17 @@
         }
 
         function installFont() {
-            if (!document.fonts.check('1em Symbola')) {
-                const font = new FontFace('1em Symbola', 'url(https://cdn.jsdelivr.net/gh/uri-hax/cdn/phaistos/Symbola-AjYx.ttf)');
-                font.load().then(loadedFont => {
-                    document.fonts.add(loadedFont);
-                    console.log('Font installed:', loadedFont);
-                }).catch(error => {
-                    console.error('Font installation failed:', error);
-                });
-            } else {
-                console.log('Font already installed');
-            }
+            const font = new FontFace('Symbola', 'url(https://cdn.jsdelivr.net/gh/uri-hax/cdn/phaistos/Symbola-AjYx.ttf)');
+            font.load().then(loadedFont => {
+                document.fonts.add(loadedFont);
+                console.log('Font installed:', loadedFont);
+            }).catch(error => {
+                console.error('Font installation failed:', error);
+            });
             document.body.style.fontFamily = 'Symbola, sans-serif';
         }
 
         function createHangman() {
-            installFont();
             if (!uploadedFile || document.getElementById('toggleFileSwitch').checked) {
                 console.log('No file uploaded, using empty input');
                 const emptyInput = "Symbol,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45"
