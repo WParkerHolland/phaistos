@@ -345,7 +345,7 @@
 
         function installFont() {
             if (!document.fonts.check('1em Symbola')) {
-                const font = new FontFace('Symbola', 'url(https://cdn.jsdelivr.net/gh/uri-hax/cdn/phaistos/Symbola-AjYx.ttf)');
+                const font = new FontFace('1em Symbola', 'url(https://cdn.jsdelivr.net/gh/uri-hax/cdn/phaistos/Symbola-AjYx.ttf)');
                 font.load().then(loadedFont => {
                     document.fonts.add(loadedFont);
                     console.log('Font installed:', loadedFont);
