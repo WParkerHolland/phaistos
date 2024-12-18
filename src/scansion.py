@@ -202,7 +202,11 @@ def evaluateScansionRuntime():
     print("100 Line Runtime: ", time100)
     print("Theogeny Runtime: ", timeWhole)
 
-scans = greekToScansion("researchProject/texts/shortTheogeny.txt")
-matchesRight, matchesWrong = checkScansion(scans[0])
-displayMatches(scans[0], matchesRight, matchesWrong, scans[1])
-
+def scansionForWebsite(file_content):
+    # This function is used to run the scansion function for the website
+    # Makes file to hold the contents, then passes the file to the scansion function
+    file = open("researchProject/texts/websiteTemp.txt", "w")
+    file.write(file_content)
+    scans = greekToScansion("researchProject/texts/websiteTemp.txt")
+    matchesRight, matchesWrong = checkScansion(scans[0])
+    displayMatches(scans[0], matchesRight, matchesWrong, scans[1], "Website")
