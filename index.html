@@ -354,6 +354,20 @@
             document.body.style.fontFamily = 'Symbola, sans-serif';
         }
 
+        function resizeFont(){
+            // Resize the font of the font in outputTables to fit the screen size using vw
+            // Dynamically resize depending on the cell with largest number of characters in it
+            const tables = document.getElementById('outputTables').getElementsByTagName('table');
+            const highestLineCharCount = Math.max(...Array.from(tables).map(table => {
+                return Math.max(...Array.from(table.rows).map(row => {
+                    return Array.from(row.cells).reduce((sum, cell) => sum + cell.innerText.length, 0);
+                }));
+            }));
+            const fontSize = 100 / (highestLineCharCount / 2);
+            const outputTables = document.getElementById('outputTables');
+            outputTables.style.fontSize = fontSize + 'vmax';
+        }
+
         function createHangman() {
             if (!uploadedFile || document.getElementById('toggleFileSwitch').checked) {
                 console.log('No file uploaded, using empty input');
@@ -369,6 +383,7 @@
                 };
                 reader.readAsText(uploadedFile);
             }
+            resizeFont();
             document.getElementById('outputTables').hidden = false;
         }
 
