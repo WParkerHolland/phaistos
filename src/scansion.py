@@ -210,3 +210,7 @@ def scansionForWebsite(file_content):
     scans = greekToScansion("researchProject/texts/websiteTemp.txt")
     matchesRight, matchesWrong = checkScansion(scans[0])
     displayMatches(scans[0], matchesRight, matchesWrong, scans[1], "Website")
+
+scans = greekToScansion("researchProject/texts/theogeny.txt")
+for i in range(len(scans[0])):
+    print("Sentence " + str(i) + " " + str(scans[0][i]))

@@ -443,6 +443,7 @@ class Scansion:
             except:
                 print(str(errCounter) + ' ' + str(tempLine))
                 print(sentence)
+                scanned_text.append(tempLine)
 
             errCounter += 1
 
