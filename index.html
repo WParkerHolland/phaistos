@@ -117,51 +117,51 @@
                     <div style="font-size: 1em;">Character Exclusions</div>
                     <select id="addExclusionDropdown" onchange="addExclusion()">
                         <option value="default">Select Symbol to make Exclusion For</option>
-                        <option value="1">&#x101D0</option>
-                        <option value="2">&#x101D1</option>
-                        <option value="3">&#x101D2</option>
-                        <option value="4">&#x101D3</option>
-                        <option value="5">&#x101D4</option>
-                        <option value="6">&#x101D5</option>
-                        <option value="7">&#x101D6</option>
-                        <option value="8">&#x101D7</option>
-                        <option value="9">&#x101D8</option>
-                        <option value="10">&#x101D9</option>
-                        <option value="11">&#x101DA</option>
-                        <option value="12">&#x101DB</option>
-                        <option value="13">&#x101DC</option>
-                        <option value="14">&#x101DD</option>
-                        <option value="15">&#x101DE</option>
-                        <option value="16">&#x101DF</option>
-                        <option value="17">&#x101E0</option>
-                        <option value="18">&#x101E1</option>
-                        <option value="19">&#x101E2</option>
-                        <option value="20">&#x101E3</option>
-                        <option value="21">&#x101E4</option>
-                        <option value="22">&#x101E5</option>
-                        <option value="23">&#x101E6</option>
-                        <option value="24">&#x101E7</option>
-                        <option value="25">&#x101E8</option>
-                        <option value="26">&#x101E9</option>
-                        <option value="27">&#x101EA</option>
-                        <option value="28">&#x101EB</option>
-                        <option value="29">&#x101EC</option>
-                        <option value="30">&#x101ED</option>
-                        <option value="31">&#x101EE</option>
-                        <option value="32">&#x101EF</option>
-                        <option value="33">&#x101F0</option>
-                        <option value="34">&#x101F1</option>
-                        <option value="35">&#x101F2</option>
-                        <option value="36">&#x101F3</option>
-                        <option value="37">&#x101F4</option>
-                        <option value="38">&#x101F5</option>
-                        <option value="39">&#x101F6</option>
-                        <option value="40">&#x101F7</option>
-                        <option value="41">&#x101F8</option>
-                        <option value="42">&#x101F9</option>
-                        <option value="43">&#x101FA</option>
-                        <option value="44">&#x101FB</option>
-                        <option value="45">&#x101FC</option>
+                        <option value="1">Pedestrian</option>
+                        <option value="2">Plumed Head</option>
+                        <option value="3">Tattooed Head</option>
+                        <option value="4">Captive</option>
+                        <option value="5">Child</option>
+                        <option value="6">Woman</option>
+                        <option value="7">Helmet</option>
+                        <option value="8">Gauntlet</option>
+                        <option value="9">Tiara</option>
+                        <option value="10">Arrow</option>
+                        <option value="11">Bow</option>
+                        <option value="12">Shield</option>
+                        <option value="13">Club</option>
+                        <option value="14">Manacles</option>
+                        <option value="15">Mattock</option>
+                        <option value="16">Saw</option>
+                        <option value="17">Lid</option>
+                        <option value="18">Boomerang</option>
+                        <option value="19">Carpentry Plane</option>
+                        <option value="20">Dolium</option>
+                        <option value="21">Comb</option>
+                        <option value="22">Sling</option>
+                        <option value="23">Column</option>
+                        <option value="24">Beehive</option>
+                        <option value="25">Ship</option>
+                        <option value="26">Horn</option>
+                        <option value="27">Hide</option>
+                        <option value="28">Bulls Leg</option>
+                        <option value="29">Cat</option>
+                        <option value="30">Ram</option>
+                        <option value="31">Eagle</option>
+                        <option value="32">Dove</option>
+                        <option value="33">Tunny</option>
+                        <option value="34">Bee</option>
+                        <option value="35">Plane Tree</option>
+                        <option value="36">Vine</option>
+                        <option value="37">Papyrus</option>
+                        <option value="38">Rosette</option>
+                        <option value="39">Lily</option>
+                        <option value="40">Ox Back</option>
+                        <option value="41">Flute</option>
+                        <option value="42">Grater</option>
+                        <option value="43">Strainer</option>
+                        <option value="44">Small Axe</option>
+                        <option value="45">Wavy Band</option>
                     </select>
                     <ul id="exclusionList">
 
@@ -262,6 +262,7 @@
         let uploadedFile;
         let diskMode = "default";
         let detailedMode = false;
+        let hexSymbols = ["", "&#x101D0", "&#x101D1", "&#x101D2", "&#x101D3", "&#x101D4", "&#x101D5", "&#x101D6", "&#x101D7", "&#x101D8", "&#x101D9", "&#x101DA", "&#x101DB", "&#x101DC", "&#x101DD", "&#x101DE", "&#x101DF", "&#x101E0", "&#x101E1", "&#x101E2", "&#x101E3", "&#x101E4", "&#x101E5", "&#x101E6", "&#x101E7", "&#x101E8", "&#x101E9", "&#x101EA", "&#x101EB", "&#x101EC", "&#x101ED", "&#x101EE", "&#x101EF", "&#x101F0", "&#x101F1", "&#x101F2", "&#x101F3", "&#x101F4", "&#x101F5", "&#x101F6", "&#x101F7", "&#x101F8", "&#x101F9", "&#x101FA", "&#x101FB", "&#x101FC", "#"];
 
         class PhaistosSymbol {
             constructor(index, vegas = false, vowel = false, subscript = false, capital = false) {
@@ -329,7 +330,7 @@
                 return;
             }
             const listItem = document.createElement('li');
-            listItem.innerText = dropdown.options[dropdown.selectedIndex].text + ': ';
+            listItem.innerHTML = hexSymbols[dropdown.selectedIndex] + ': ';
             const input = document.createElement('input');
             input.id = 'exclusion' + selectedValue;
             listItem.appendChild(input);
@@ -365,7 +366,7 @@
             }));
             const fontSize = 100 / (highestLineCharCount / 2.5);
             const outputTables = document.getElementById('outputTables');
-            outputTables.style.fontSize = fontSize + 'vmax';
+            outputTables.style.fontSize = fontSize + 'vmin';
         }
 
         function createHangman() {
@@ -465,7 +466,7 @@
 
         function hangmanSubstitution(substitutions, diskOption = "default"){
             // Variable declarations
-            let singleSubs = [], subTracker = [], diskSymbols = [], possibleSymbols = [], possibleVegasSymbols = [], possibleVowelSymbols = [], hexSymbols = [], returnString = "";
+            let singleSubs = [], subTracker = [], diskSymbols = [], possibleSymbols = [], possibleVegasSymbols = [], possibleVowelSymbols = [], returnString = "";
             
             // Selecting version of disk to substitute
             if(diskOption === "default"){
@@ -496,7 +497,6 @@
             possibleSymbols = ['κ', 'χ', 'ι', 'γ', 'π', 'φ', 'β', 'υ', 'τ', 'θ', 'δ', '῾', 'λ', 'μ', 'ν', 'γ', 'ρ', 'ῤ', 'σ', 'ζ', 'ξ', 'ψ', 'ζ', 'ᾰ', 'ᾱ', 'η', 'ε', "ει", 'ῐ', 'ῑ', 'ω', 'ο', "ου", 'ῠ', 'ῡ', "αι", "αυ", "ει", "ευ", "οι", "υι", 'ᾳ', 'ῃ', 'ῳ'];
             possibleVegasSymbols = ['α', 'ε', 'η', 'ι', 'o', 'υ', 'ω', 'σ', 'ρ', 'ν'];
             possibleVowelSymbols = ['α', 'ε', 'η', 'ι', 'o', 'υ', 'ω'];
-            hexSymbols = ["", "&#x101D0", "&#x101D1", "&#x101D2", "&#x101D3", "&#x101D4", "&#x101D5", "&#x101D6", "&#x101D7", "&#x101D8", "&#x101D9", "&#x101DA", "&#x101DB", "&#x101DC", "&#x101DD", "&#x101DE", "&#x101DF", "&#x101E0", "&#x101E1", "&#x101E2", "&#x101E3", "&#x101E4", "&#x101E5", "&#x101E6", "&#x101E7", "&#x101E8", "&#x101E9", "&#x101EA", "&#x101EB", "&#x101EC", "&#x101ED", "&#x101EE", "&#x101EF", "&#x101F0", "&#x101F1", "&#x101F2", "&#x101F3", "&#x101F4", "&#x101F5", "&#x101F6", "&#x101F7", "&#x101F8", "&#x101F9", "&#x101FA", "&#x101FB", "&#x101FC", "#"];
             singleSubs = Array.from({length: 47}, (_, i) => "Unsubstituted");
             subTracker = Array.from({length: 47}, (_, i) => "Unsubstituted");
             substitutions = substitutions.split(',');
