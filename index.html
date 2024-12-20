@@ -246,6 +246,8 @@
                 <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
                 <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
             </table>
+            <br>
+            <button onclick="downloadHangman()">Download Your Hangman</button>
         </div>
     </div>
     <div id="scansionDiv" hidden>
@@ -256,6 +258,14 @@
         <br>
         <button onclick="makeScansion()">Scansion Test</button>
         <div id="scansionOutput">Input a text file to make a scansion of</div>
+    </div>
+
+    <br><br><br><br>
+    <div id="contactDiv" style="text-align: center;">
+        <div>If you have any questions or encounter any issues, send them to one of the emails below</div>
+        <div>parkerholland04@uri.edu</div>
+        <div>falvespereira@uri.edu</div>
+        <br>
     </div>
 
     <script>
@@ -587,6 +597,37 @@
             }
 
             return "";
+        }
+
+        function downloadHangman() {
+            const tables = document.getElementById('outputTables').getElementsByTagName('table');
+            let textContent = '', tableIndex = 1;
+
+            for (let table of tables) {
+                if(tableIndex < 6){
+                    textContent += "Line" + String(tableIndex) + "A\n";
+                } else if(tableIndex == 10){
+                    textContent += "Line5B\n";
+                } else {
+                    textContent += "Line" + String(tableIndex % 5) + "B\n";
+                }
+
+                for (let row of table.rows) {
+                    for (let cell of row.cells) {
+                        textContent += cell.innerText + '\t';
+                    }
+                    textContent += '\n';
+                }
+                textContent += '\n';
+
+                tableIndex++;
+            }
+
+            const blob = new Blob([textContent], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'hangman_output.txt';
+            link.click();
         }
 
         function makeScansion() {
