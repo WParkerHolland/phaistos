@@ -635,11 +635,12 @@
             if(!pyodideReady){
                 let pyodide = await loadPyodide();
                 await pyodide.loadPackage("numpy");
+                await pyodide.loadPackage("requests");
+                await pyodide.loadPackage("tqdm");
                 await pyodide.loadPackage("micropip");
-                let source = "import micropip\n" + "micropip.install('stringcase', keep_going=True)";
+                let source = "import micropip\n" + "micropip.install('boltons')\n" + "micropip.install('spacy')";
                 await pyodide.runPython(source);
-                //await micropip.install("stringcase");
-                let response = await fetch('https://cdn.jsdelivr.net/gh/uri-hax/cdn/phaistos/cltk.zip');
+                let response = await fetch('https://cdn.jsdelivr.net/gh/uri-hax/cdn/phaistosLibraries/cltk.zip');
                 let buffer = await response.arrayBuffer();
                 await pyodide.unpackArchive(buffer, "zip");
                 pyodide.pyimport("cltk");
