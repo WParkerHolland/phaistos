@@ -16,7 +16,8 @@ from dataclasses import dataclass, field
 from typing import Optional, Type, Union
 
 import numpy as np
-import stringcase as sc
+# Commented this out in hopes of fixing website import issues
+#import stringcase as sc
 
 from cltk.morphology.morphosyntax import MorphosyntacticFeatureBundle
 from cltk.morphology.universal_dependencies_features import MorphosyntacticFeature
