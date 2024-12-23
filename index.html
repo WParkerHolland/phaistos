@@ -638,7 +638,7 @@
                 await pyodide.loadPackage("requests");
                 await pyodide.loadPackage("tqdm");
                 await pyodide.loadPackage("micropip");
-                let source = "import micropip\n" + "micropip.install('boltons')\n" + "micropip.install('spacy')";
+                let source = "import micropip\n" + "micropip.install(['boltons','stanza','typing','dataclasses','requests','tqdm'], keep_going=True, deps=False)";
                 await pyodide.runPython(source);
                 let response = await fetch('https://cdn.jsdelivr.net/gh/uri-hax/cdn/phaistosLibraries/cltk.zip');
                 let buffer = await response.arrayBuffer();
