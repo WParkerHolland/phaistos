@@ -255,15 +255,6 @@
             </div>
         </div>
     </div>
-    <div id="scansionDiv" hidden>
-        <h2>Scansion</h2>
-        <label for="scansionInput">Enter Text for Scansion:</label>
-        <input type="text" id="scansionInput">
-        <button onclick="scansion()">Scan Text</button>
-        <br>
-        <button onclick="makeScansion()">Scansion Test</button>
-        <div id="scansionOutput">Input a text file to make a scansion of</div>
-    </div>
 
     <br><br><br><br>
     <div id="contactDiv" style="text-align: center;">
@@ -641,27 +632,6 @@
             for(let i = 1; i < tempSubs.length; i++){
                 document.getElementById('substitution' + i).value = tempSubs[i];
             }
-        }
-
-        async function makeScansion() {
-            if(!pyodideReady){
-                let pyodide = await loadPyodide();
-                await pyodide.loadPackage("numpy");
-                await pyodide.loadPackage("requests");
-                await pyodide.loadPackage("tqdm");
-                await pyodide.loadPackage("micropip");
-                let source = "import micropip\n" + "micropip.install(['boltons','stanza','typing','dataclasses','requests','tqdm'], keep_going=True, deps=False)";
-                await pyodide.runPython(source);
-                let response = await fetch('https://cdn.jsdelivr.net/gh/uri-hax/cdn/phaistosLibraries/cltk.zip');
-                let buffer = await response.arrayBuffer();
-                await pyodide.unpackArchive(buffer, "zip");
-                pyodide.pyimport("cltk");
-                pyodideReady = true;
-            }
-
-            const text = document.getElementById('scansionOutput');
-            text.innerText = "Great Success!";
-
         }
     </script>
 </body>

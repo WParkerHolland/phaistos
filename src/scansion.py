@@ -6,19 +6,19 @@ def greekToScansion(file_path):
     from cltk.prosody.grc import Scansion
     from cltk import NLP
     import sys
-    sys.path.append("cltk")
+    sys.path.append("/cltk")
 
     with open(file_path, 'r', encoding="utf8") as file:
         file_content = file.read()
 
     # https://github.com/cltk/cltk/issues/1247
     # Including this here just in case
-    cltk_nlp = NLP(language="grc")
+    cltk_nlp = NLP(language="grc", suppress_banner=True)
     cltk_doc = cltk_nlp.analyze(file_content)
     tokens = cltk_doc.tokens
     clean_accents = Scansion()._clean_accents(tokens)
 
-    syllables = Scansion()._make_syllables(clean_accents, byNewline=True)
+    syllables = Scansion()._make_syllables(clean_accents, True)
     condensed = Scansion()._syllable_condenser(syllables, splitByLine=True)
     scanned = Scansion()._scansion(condensed)
     return scanned, condensed, clean_accents, syllables

@@ -9,7 +9,6 @@ def open_file():
     file_path = filedialog.askopenfilename()
     if file_path:
         script_dir = os.path.dirname(os.path.abspath(__file__)) + "\\src"
-        print(script_dir)
         sys.path.append(script_dir)
         abs_path = os.path.abspath(file_path)
         scans = scansion.greekToScansion(abs_path)
