@@ -1,6 +1,9 @@
 # Phaistos Disc Project
 # Declaration of processor function and calling of it
 # Uses cltk, Fran did most of this
+import tkinter as tk
+from tkinter import filedialog
+import os
 
 def greekToScansion(file_path):
     from cltk.prosody.grc import Scansion
@@ -210,3 +213,26 @@ def scansionForWebsite(file_content):
     scans = greekToScansion("researchProject/texts/websiteTemp.txt")
     matchesRight, matchesWrong = checkScansion(scans[0])
     return scans[0], matchesRight, matchesWrong, scans[1]
+
+def open_file():
+    file_path = filedialog.askopenfilename()
+    if file_path:
+        abs_path = os.path.abspath(file_path)
+        scans = greekToScansion(abs_path)
+        print(makePresentable(scans[0]))
+
+# Window Declaration
+window = tk.Tk()
+window.title("Ariadne")
+window.geometry("800x600")
+
+# Title Label
+label = tk.Label(text="Ariadne Scansion Tool", font=("Arial", 24))
+label.pack()
+
+# File Input
+
+openFileButton = tk.Button(text="Select File to Scan", command=open_file)
+openFileButton.pack()
+
+window.mainloop()
