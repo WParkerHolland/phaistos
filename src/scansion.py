@@ -4,6 +4,7 @@
 import tkinter as tk
 from tkinter import filedialog
 import os
+
 #---------------------- Scansion making -------------------------------------------------------------
 def greekToScansion(file_path):
     from cltk.prosody.grc import Scansion
