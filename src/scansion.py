@@ -4,7 +4,7 @@
 import tkinter as tk
 from tkinter import filedialog
 import os
-
+#---------------------- Scansion making -------------------------------------------------------------
 def greekToScansion(file_path):
     from cltk.prosody.grc import Scansion
     from cltk import NLP
@@ -214,13 +214,16 @@ def scansionForWebsite(file_content):
     matchesRight, matchesWrong = checkScansion(scans[0])
     return scans[0], matchesRight, matchesWrong, scans[1]
 
+
+# ------------------------- UI Part -------------------------------------------------------------------------
 def open_file():
-    file_path = filedialog.askopenfilename()
+    filename = filedialog.askopenfilename(initialdir = "/",title = "Select a File", filetypes = (("Text files", "*.txt*"),("all files","*.*")))
+    label_file_explorer.configure(text="File Opened: "+filename)
+    file_path = filename
     if file_path:
         abs_path = os.path.abspath(file_path)
         scans = greekToScansion(abs_path)
         print(makePresentable(scans[0]))
-
 # Window Declaration
 window = tk.Tk()
 window.title("Ariadne")
@@ -231,8 +234,10 @@ label = tk.Label(text="Ariadne Scansion Tool", font=("Arial", 24))
 label.pack()
 
 # File Input
-
-openFileButton = tk.Button(text="Select File to Scan", command=open_file)
-openFileButton.pack()
+# Create a File Explorer label
+label_file_explorer = tk.Label(window, text = "test", width = 100, height = 4)        
+button_explore = tk.Button(window, text = "Browse Files", command = open_file) 
+label_file_explorer.pack()
+button_explore.pack()
 
 window.mainloop()
