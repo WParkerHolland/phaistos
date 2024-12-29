@@ -260,7 +260,6 @@ def downloadScansion():
 window = tk.Tk()
 window.title("Ariadne")
 window.geometry("1200x900")
-abs_path = ""
 
 # Title Label
 label = tk.Label(text="Ariadne Scansion Tool", font=("Courier", 16))
