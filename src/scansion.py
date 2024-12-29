@@ -45,43 +45,51 @@ def makePresentable(scansion):
                         newScansion += "x\n"
     return newScansion
 
+def centerText(text, length):
+    while len(text) < length:
+        if(len(text) % 2 == 0):
+            text = " " + text
+        else:
+            text = text + " "
+    return text
+
 def makeMorePresentable(scansion, syllables):
     # Combine syllables into proper format
     tempList = []
     for grouping in syllables:
+        for i in range(len(grouping)):
+            for j in range(len(grouping[i])):
+                grouping[i][j] = grouping[i][j].replace("\n", "")
         tempList += grouping
     syllables = tempList
 
     # This function will make the scansion output more presentable while also displaying how each syllable was classified
     lineOffset = 0
-    finString = ""
+    finString = "\n"
     for line in scansion:
-        syllI = 0
-        scanSent = ""
-        syllSent = ""
-        for foot in line:
-            for syllable in foot:
-                match syllable:
-                    case "¯":
-                        scanSent += "- "
-                        syllSent += str(syllables[lineOffset][syllI]) + " "
-                        syllI += 1
-                    case "˘":
-                        scanSent += "u "
-                        syllSent += str(syllables[lineOffset][syllI]) + " "
-                        syllI += 1
-                    case "|":
-                        scanSent += "| "
-                        syllSent += "| "
-                    case _:
-                        scanSent += "x"
-                        syllSent += str(syllables[lineOffset][syllI]) + " "
-                        syllSent = syllSent.replace("\n", "\\n")
-                        finString += scanSent + "\n"
-                        finString += syllSent + "\n\n"
-                        scanSent = ""
-                        syllSent = ""
-        
+        scanLine = ""
+        syllLine = ""
+        if('?' in line):
+            for i in range(len(line)):
+                if(line[i] == '?'):
+                    scanLine += centerText('?', len(syllables[lineOffset][i])) + " "
+                    syllLine += syllables[lineOffset][i] + " "
+                else:
+                    scanLine += centerText(line[i], len(syllables[lineOffset][i])) + " "
+                    syllLine += syllables[lineOffset][i] + " "
+        else:
+            for i in range(len(line)):
+                if(line[i:i+2] == ['¯', '¯']):
+                    scanLine += centerText('¯', len(syllables[lineOffset][i])) + " " + centerText('¯', len(syllables[lineOffset][i+1])) + " | "
+                    syllLine += syllables[lineOffset][i] + " " + syllables[lineOffset][i+1] + " | "
+                elif(line[i:i+2] == ['¯', 'X']):
+                    scanLine += centerText('¯', len(syllables[lineOffset][i])) + " " + centerText('x', len(syllables[lineOffset][i+1]))
+                    syllLine += syllables[lineOffset][i] + " " + syllables[lineOffset][i+1]
+                elif(line[i:i+3] == ['¯', '˘', '˘']):
+                    scanLine += centerText('¯', len(syllables[lineOffset][i])) + " " + centerText('˘', len(syllables[lineOffset][i+1])) + " " + centerText('˘', len(syllables[lineOffset][i+2])) + " | "
+                    syllLine += syllables[lineOffset][i] + " " + syllables[lineOffset][i+1] + " " + syllables[lineOffset][i+2] + " | "
+            
+        finString += scanLine + "\n" + syllLine + "\n\n"
         lineOffset += 1
     return finString
 
@@ -224,23 +232,21 @@ def open_file():
     if file_path:
         abs_path = os.path.abspath(file_path)
         scans = greekToScansion(abs_path)
-        gl=makePresentable(scans[0])
-        print(gl)
-        output = tk.Label(text=gl, font=("Arial", 24))
+        output = tk.Label(text=makeMorePresentable(scans[0], scans[3]), font=("Courier", 16), justify="left")
         output.pack()
-        
+
 # Window Declaration
 window = tk.Tk()
 window.title("Ariadne")
-window.geometry("800x600")
+window.geometry("1200x1000")
 
 # Title Label
-label = tk.Label(text="Ariadne Scansion Tool", font=("Arial", 24))
+label = tk.Label(text="Ariadne Scansion Tool", font=("Courier", 16))
 label.pack()
 
 # File Input
 # Create a File Explorer label
-label_file_explorer = tk.Label(window, text = "test", width = 100, height = 4)        
+label_file_explorer = tk.Label(window, text = "Provide a file to scans", width = 100, height = 4)        
 button_explore = tk.Button(window, text = "Browse Files", command = open_file) 
 label_file_explorer.pack()
 button_explore.pack()
