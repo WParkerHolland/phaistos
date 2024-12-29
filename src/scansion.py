@@ -53,7 +53,7 @@ def centerText(text, length):
             text = text + " "
     return text
 
-def makeMorePresentable(scansion, syllables):
+def makeMorePresentable(scansion, syllables, preview=False, lineNumeration=False):
     # Combine syllables into proper format
     tempList = []
     for grouping in syllables:
@@ -67,6 +67,9 @@ def makeMorePresentable(scansion, syllables):
     lineOffset = 0
     finString = "\n"
     for line in scansion:
+        if(preview and lineOffset > 10):
+            break
+
         scanLine = ""
         syllLine = ""
         if('?' in line):
@@ -88,7 +91,9 @@ def makeMorePresentable(scansion, syllables):
                 elif(line[i:i+3] == ['¯', '˘', '˘']):
                     scanLine += centerText('¯', len(syllables[lineOffset][i])) + " " + centerText('˘', len(syllables[lineOffset][i+1])) + " " + centerText('˘', len(syllables[lineOffset][i+2])) + " | "
                     syllLine += syllables[lineOffset][i] + " " + syllables[lineOffset][i+1] + " " + syllables[lineOffset][i+2] + " | "
-            
+        
+        if(lineNumeration):
+            finString += "Line {}: \n".format(lineOffset + 1)
         finString += scanLine + "\n" + syllLine + "\n\n"
         lineOffset += 1
     return finString
@@ -227,18 +232,35 @@ def scansionForWebsite(file_content):
 # ------------------------- UI Part -------------------------------------------------------------------------
 def open_file():
     filename = filedialog.askopenfilename(initialdir = "C:/Downloads",title = "Select a File", filetypes = (("Text files", "*.txt*"),("all files","*.*")))
-    label_file_explorer.configure(text="File Opened: "+filename)
+    label_file_explorer.configure(text="Preview of Scansion for File: "+filename)
     file_path = filename
     if file_path:
+        global scans, abs_path
         abs_path = os.path.abspath(file_path)
+        output.configure(text="Scanning file, please wait...")
+        output.update()
         scans = greekToScansion(abs_path)
-        output = tk.Label(text=makeMorePresentable(scans[0], scans[3]), font=("Courier", 16), justify="left")
-        output.pack()
+        output.configure(text=makeMorePresentable(scans[0], scans[3], True))
+
+def downloadScansion():
+    # This function is used to download the scansion output
+    if(output.cget("text") == "" or output.cget("text") == "Please provide a file to scan first."):
+        output.configure(text="Please provide a file to scan first.")
+    else:
+        filename = filedialog.asksaveasfilename(initialdir = "C:/Downloads",title = "Save File", filetypes = (("Text files", "*.txt*"),("all files","*.*")))
+        pathToSave = os.path.abspath(filename)
+        file = open(pathToSave, "w")
+        file.write("Ariadne Scansion of {}\n".format(abs_path))
+        file.write("Any scansions that inclue a ? could not be confidently determined by the algorithm.\n")
+        file.write("This is either due to an incomplete line or a notable irregularity in the text.\n\n")
+        file.write(makeMorePresentable(scans[0], scans[3], False, True))
+        file.close()
 
 # Window Declaration
 window = tk.Tk()
 window.title("Ariadne")
-window.geometry("1200x1000")
+window.geometry("1200x900")
+abs_path = ""
 
 # Title Label
 label = tk.Label(text="Ariadne Scansion Tool", font=("Courier", 16))
@@ -246,9 +268,17 @@ label.pack()
 
 # File Input
 # Create a File Explorer label
-label_file_explorer = tk.Label(window, text = "Provide a file to scans", width = 100, height = 4)        
-button_explore = tk.Button(window, text = "Browse Files", command = open_file) 
+label_file_explorer = tk.Label(window, text = "Provide a file to scan", width = 100)        
+frame_buttons = tk.Frame(window)
+button_explore = tk.Button(frame_buttons, text = "Browse Files", command = open_file) 
+button_download = tk.Button(frame_buttons, text = "Download Scansion", command = downloadScansion)
+button_explore.pack(side=tk.LEFT, padx=5)
+button_download.pack(side=tk.LEFT, padx=5)
+frame_buttons.pack()
 label_file_explorer.pack()
-button_explore.pack()
+
+#File Output
+output = tk.Label(text="", font=("Courier", 14), justify="left")
+output.pack()
 
 window.mainloop()
