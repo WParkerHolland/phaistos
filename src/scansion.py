@@ -218,13 +218,17 @@ def scansionForWebsite(file_content):
 
 # ------------------------- UI Part -------------------------------------------------------------------------
 def open_file():
-    filename = filedialog.askopenfilename(initialdir = "/",title = "Select a File", filetypes = (("Text files", "*.txt*"),("all files","*.*")))
+    filename = filedialog.askopenfilename(initialdir = "C:/Downloads",title = "Select a File", filetypes = (("Text files", "*.txt*"),("all files","*.*")))
     label_file_explorer.configure(text="File Opened: "+filename)
     file_path = filename
     if file_path:
         abs_path = os.path.abspath(file_path)
         scans = greekToScansion(abs_path)
-        print(makePresentable(scans[0]))
+        gl=makePresentable(scans[0])
+        print(gl)
+        output = tk.Label(text=gl, font=("Arial", 24))
+        output.pack()
+        
 # Window Declaration
 window = tk.Tk()
 window.title("Ariadne")
