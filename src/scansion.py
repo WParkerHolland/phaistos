@@ -249,7 +249,7 @@ def downloadScansion():
     else:
         filename = filedialog.asksaveasfilename(initialdir = "C:/Downloads",title = "Save File", filetypes = (("Text files", "*.txt*"),("all files","*.*")))
         pathToSave = os.path.abspath(filename)
-        file = open(pathToSave, "w")
+        file = open(pathToSave + ".txt", "w")
         file.write("Ariadne Scansion of {}\n".format(abs_path))
         file.write("Any scansions that inclue a ? could not be confidently determined by the algorithm.\n")
         file.write("This is either due to an incomplete line or a notable irregularity in the text.\n\n")
