@@ -6,23 +6,22 @@ from tkinter import filedialog
 import os
 from cltk.prosody.grc import Scansion
 
-#---------------------- Scansion making -------------------------------------------------------------
 def greekToScansion(file_path):
     from cltk import NLP
     import sys
-    sys.path.append("/cltk")
+    sys.path.append("cltk")
 
     with open(file_path, 'r', encoding="utf8") as file:
         file_content = file.read()
 
     # https://github.com/cltk/cltk/issues/1247
     # Including this here just in case
-    cltk_nlp = NLP(language="grc", suppress_banner=True)
+    cltk_nlp = NLP(language="grc")
     cltk_doc = cltk_nlp.analyze(file_content)
     tokens = cltk_doc.tokens
     clean_accents = Scansion()._clean_accents(tokens)
 
-    syllables = Scansion()._make_syllables(clean_accents, True)
+    syllables = Scansion()._make_syllables(clean_accents, byNewline=True)
     condensed = Scansion()._syllable_condenser(syllables, splitByLine=True)
     scanned = Scansion()._scansion(condensed)
     return scanned, condensed, clean_accents, syllables
@@ -82,7 +81,7 @@ def makeMorePresentable(scansion, syllables, preview=False, lineNumeration=False
                     syllLine += syllables[lineOffset][i] + " "
         else:
             for i in range(len(line)):
-                if(line[i:i+2] == ['¯', '¯']):
+                if(line[i:i+2] == ['¯', '¯'] and line[i+2] != '˘'):
                     scanLine += centerText('¯', len(syllables[lineOffset][i])) + " " + centerText('¯', len(syllables[lineOffset][i+1])) + " | "
                     syllLine += syllables[lineOffset][i] + " " + syllables[lineOffset][i+1] + " | "
                 elif(line[i:i+2] == ['¯', 'X']):
@@ -97,6 +96,7 @@ def makeMorePresentable(scansion, syllables, preview=False, lineNumeration=False
         finString += scanLine + "\n" + syllLine + "\n\n"
         lineOffset += 1
     return finString
+
 
 def makeSyllablesPresentable(syllables):
     # This function is used solely for presentation in displayMatches function
@@ -219,16 +219,6 @@ def evaluateScansionRuntime():
     print("100 Line Runtime: ", time100)
     print("Theogeny Runtime: ", timeWhole)
 
-def scansionForWebsite(file_content):
-    # This function is used to run the scansion function for the website
-    # Makes file to hold the contents, then passes the file to the scansion function
-    file = open("researchProject/texts/websiteTemp.txt", "w")
-    file.write(file_content)
-    scans = greekToScansion("researchProject/texts/websiteTemp.txt")
-    matchesRight, matchesWrong = checkScansion(scans[0])
-    return scans[0], matchesRight, matchesWrong, scans[1]
-
-
 # ------------------------- UI Part -------------------------------------------------------------------------
 def open_file():
     filename = filedialog.askopenfilename(initialdir = "C:/Downloads",title = "Select a File", filetypes = (("Text files", "*.txt*"),("all files","*.*")))
@@ -240,7 +230,7 @@ def open_file():
         output.configure(text="Scanning file, please wait...")
         output.update()
         scans = greekToScansion(abs_path)
-        output.configure(text=makeMorePresentable(scans[0], scans[3], True))
+        output.configure(text=makeMorePresentable(scans[0], scans[3], True, False))
 
 def downloadScansion():
     # This function is used to download the scansion output
