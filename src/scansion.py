@@ -5,10 +5,10 @@ import tkinter as tk
 from tkinter import filedialog
 import os
 from cltk.prosody.grc import Scansion
+from cltk import NLP
+import sys
 
 def greekToScansion(file_path):
-    from cltk import NLP
-    import sys
     sys.path.append("cltk")
 
     with open(file_path, 'r', encoding="utf8") as file:
@@ -65,6 +65,7 @@ def makeMorePresentable(scansion, syllables, preview=False, lineNumeration=False
     # This function will make the scansion output more presentable while also displaying how each syllable was classified
     lineOffset = 0
     finString = "\n"
+    skip = False
     for line in scansion:
         if(preview and lineOffset > 10):
             break
@@ -81,9 +82,13 @@ def makeMorePresentable(scansion, syllables, preview=False, lineNumeration=False
                     syllLine += syllables[lineOffset][i] + " "
         else:
             for i in range(len(line)):
-                if(line[i:i+2] == ['¯', '¯'] and line[i+2] != '˘'):
+                if(skip):
+                    skip = False
+                    continue
+                if(line[i:i+2] == ['¯', '¯']):
                     scanLine += centerText('¯', len(syllables[lineOffset][i])) + " " + centerText('¯', len(syllables[lineOffset][i+1])) + " | "
                     syllLine += syllables[lineOffset][i] + " " + syllables[lineOffset][i+1] + " | "
+                    skip = True
                 elif(line[i:i+2] == ['¯', 'X']):
                     scanLine += centerText('¯', len(syllables[lineOffset][i])) + " " + centerText('x', len(syllables[lineOffset][i+1]))
                     syllLine += syllables[lineOffset][i] + " " + syllables[lineOffset][i+1]
