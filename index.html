@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phaistos Decoding Tool</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+    
+</head>
+<body onload="installFont()">
+    <h1>Phaistos Disc Decoding Tool</h1>
+    <div id="fileUpload">
+        <input type="file" id="fileInput">
+        <button onclick="storeFile()">Upload File</button>
+    </div>
+    <label for="toggleSwitch" id="toggleFileTag">Disable File Input:</label>
+    <input type="checkbox" id="toggleFileSwitch" onclick="toggleFileInput()">
+    <br><br>
+    <label for="toolSelect">Select Tool:</label>
+    <select id="toolSelect" onchange="changeTool()">
+        <option value="hangman">Hangman</option>
+        <option value="scansion">Scansion</option>
+    </select>
+
+    <br>
+    <div id="hangmanDiv">
+        <h2>Hangman</h2>
+        <label for="diskModeSelect">Select Disc Mode:</label>
+        <select id="diskModeSelect" onchange="changeDiskMode()">
+            <option value="default">Default</option>
+            <option value="vegas">Vegas</option>
+        </select>
+
+        <br><br>
+
+        <button onclick="showDetailView()" id="detailButton">Show Detailed View</button>
+        <br>
+
+        <div hidden id="detailedView">
+            <h3>Detailed Substitution View</h3>
+            <button onclick="clearSubstitutions()">Clear Substitutions</button>
+            <br><br>
+            <div style="font-size: 1.5em;">
+                <div>
+                    <div style="display: inline;">&#x101D0:</div> <input type="text" id="substitution1" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101D1:</div> <input type="text" id="substitution2" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101D2:</div> <input type="text" id="substitution3" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101D3:</div> <input type="text" id="substitution4" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101D4:</div> <input type="text" id="substitution5" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101D5:</div> <input type="text" id="substitution6" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101D6:</div> <input type="text" id="substitution7" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101D7:</div> <input type="text" id="substitution8" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101D8:</div> <input type="text" id="substitution9" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101D9:</div> <input type="text" id="substitution10" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101DA:</div> <input type="text" id="substitution11" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101DB:</div> <input type="text" id="substitution12" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                </div>
+                <br>
+                <div>
+                    <div style="display: inline;">&#x101DC:</div> <input type="text" id="substitution13" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101DD:</div> <input type="text" id="substitution14" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101DE:</div> <input type="text" id="substitution15" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101DF:</div> <input type="text" id="substitution16" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101E0:</div> <input type="text" id="substitution17" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101E1:</div> <input type="text" id="substitution18" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101E2:</div> <input type="text" id="substitution19" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101E3:</div> <input type="text" id="substitution20" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101E4:</div> <input type="text" id="substitution21" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101E5:</div> <input type="text" id="substitution22" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101E6:</div> <input type="text" id="substitution23" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101E7:</div> <input type="text" id="substitution24" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                </div>
+                <br>
+                <div>
+                    <div style="display: inline;">&#x101E8:</div> <input type="text" id="substitution25" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101E9:</div> <input type="text" id="substitution26" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101EA:</div> <input type="text" id="substitution27" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101EB:</div> <input type="text" id="substitution28" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101EC:</div> <input type="text" id="substitution29" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101ED:</div> <input type="text" id="substitution30" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101EE:</div> <input type="text" id="substitution31" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101EF:</div> <input type="text" id="substitution32" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101F0:</div> <input type="text" id="substitution33" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101F1:</div> <input type="text" id="substitution34" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101F2:</div> <input type="text" id="substitution35" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101F3:</div> <input type="text" id="substitution36" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                </div>
+                <br>
+                <div>
+                    <div style="display: inline;">&#x101F4:</div> <input type="text" id="substitution37" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101F5:</div> <input type="text" id="substitution38" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101F6:</div> <input type="text" id="substitution39" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101F7:</div> <input type="text" id="substitution40" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101F8:</div> <input type="text" id="substitution41" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101F9:</div> <input type="text" id="substitution42" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101FA:</div> <input type="text" id="substitution43" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101FB:</div> <input type="text" id="substitution44" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101FC:</div> <input type="text" id="substitution45" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <!--- For some reason substitions for the damage mark does not work, this can be a future thing to fix and look into -->
+                    <div style="display: inline;">#:</div> <input type="text" id="substitution46" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                </div>
+                <br>
+                <div> <!-- Subscript Override Text Entries-->
+                    <div style="font-size: 1em;">Subscript Override</div>
+                    <div style="display: inline;">&#x101D0:</div> <input type="text" id="substitution1S" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101D4:</div> <input type="text" id="substitution5S" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101D6:</div> <input type="text" id="substitution7S" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101D7:</div> <input type="text" id="substitution8S" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101E1:</div> <input type="text" id="substitution18S" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101E9:</div> <input type="text" id="substitution26S" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101F2:</div> <input type="text" id="substitution35S" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+                    <div style="display: inline;">&#x101FA:</div> <input type="text" id="substitution43S" placeholder="" style="display: inline; width: 2em;"> <div style="display:inline;">  </div>
+
+                </div>
+                <br>
+                <div id="exclusionDiv"> <!-- Character Exclusion Entries-->
+                    <div style="font-size: 1em;">Character Exclusions (Experimental)</div>
+                    <select id="addExclusionDropdown" onchange="addExclusion()">
+                        <option value="default">Select Symbol to make Exclusion For</option>
+                        <option value="1">Pedestrian</option>
+                        <option value="2">Plumed Head</option>
+                        <option value="3">Tattooed Head</option>
+                        <option value="4">Captive</option>
+                        <option value="5">Child</option>
+                        <option value="6">Woman</option>
+                        <option value="7">Helmet</option>
+                        <option value="8">Gauntlet</option>
+                        <option value="9">Tiara</option>
+                        <option value="10">Arrow</option>
+                        <option value="11">Bow</option>
+                        <option value="12">Shield</option>
+                        <option value="13">Club</option>
+                        <option value="14">Manacles</option>
+                        <option value="15">Mattock</option>
+                        <option value="16">Saw</option>
+                        <option value="17">Lid</option>
+                        <option value="18">Boomerang</option>
+                        <option value="19">Carpentry Plane</option>
+                        <option value="20">Dolium</option>
+                        <option value="21">Comb</option>
+                        <option value="22">Sling</option>
+                        <option value="23">Column</option>
+                        <option value="24">Beehive</option>
+                        <option value="25">Ship</option>
+                        <option value="26">Horn</option>
+                        <option value="27">Hide</option>
+                        <option value="28">Bulls Leg</option>
+                        <option value="29">Cat</option>
+                        <option value="30">Ram</option>
+                        <option value="31">Eagle</option>
+                        <option value="32">Dove</option>
+                        <option value="33">Tunny</option>
+                        <option value="34">Bee</option>
+                        <option value="35">Plane Tree</option>
+                        <option value="36">Vine</option>
+                        <option value="37">Papyrus</option>
+                        <option value="38">Rosette</option>
+                        <option value="39">Lily</option>
+                        <option value="40">Ox Back</option>
+                        <option value="41">Flute</option>
+                        <option value="42">Grater</option>
+                        <option value="43">Strainer</option>
+                        <option value="44">Small Axe</option>
+                        <option value="45">Wavy Band</option>
+                        <option value="46">Damage</option>
+                    </select>
+                    <ul id="exclusionList">
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <br><br>
+
+        <button onclick="createHangman()">Create Hangman</button>
+        <h2>Created Hangman Combination</h2>
+        <div id="hangman"></div>
+        
+        <div id="outputTables" style="border-color: white; font-size: 1.5em;" hidden>
+            <table border="0" id="table1">
+                <caption>Line 1A</caption>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            </table>
+            <br>
+            <table border="0" id="table2">
+                <caption>Line 2A</caption>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            </table>
+            <br>
+            <table border="0" id="table3">
+                <caption>Line 3A</caption>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            </table>
+            <br>
+            <table border="0" id="table4">
+                <caption>Line 4A</caption>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            </table>
+            <br>
+            <table border="0" id="table5">
+                <caption>Line 5A</caption>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            </table>
+            <br>
+            <table border="0" id="table6">
+                <caption>Line 1B</caption>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            </table>
+            <br>
+            <table border="0" id="table7">
+                <caption>Line 2B</caption>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            </table>
+            <br>
+            <table border="0" id="table8">
+                <caption>Line 3B</caption>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            </table>
+            <br>
+            <table border="0" id="table9">
+                <caption>Line 4B</caption>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            </table>
+            <br>
+            <table border="0" id="table10">
+                <caption>Line 5B</caption>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            </table>
+            <br>
+            <div style="display: inline-block;">
+                <button onclick="downloadHangman()" style="margin-right: 10px;">Download Your Hangman</button>
+                <button onclick="saveSubs()">Modify Your Hangman</button>
+            </div>
+        </div>
+    </div>
+
+    <br><br><br><br>
+    <div id="contactDiv" style="text-align: center;">
+        <div>If you have any questions or encounter any issues, send them to one of the emails below</div>
+        <div>parkerholland04@uri.edu</div>
+        <div>falvespereira@uri.edu</div>
+        <div>Additionally, you can provide feedback through the survey <a href="https://docs.google.com/forms/d/e/1FAIpQLSfz15iR9Cse8tpWRHVJlCvguEs378BzvV97U4WMqUttPROVIQ/viewform">here</a></div>
+        <br>
+    </div>
+
+    <script>
+        let uploadedFile;
+        let diskMode = "default";
+        let detailedMode = false, pyodideReady = false, lastHangmanSubs = "";
+        let hexSymbols = ["", "&#x101D0", "&#x101D1", "&#x101D2", "&#x101D3", "&#x101D4", "&#x101D5", "&#x101D6", "&#x101D7", "&#x101D8", "&#x101D9", "&#x101DA", "&#x101DB", "&#x101DC", "&#x101DD", "&#x101DE", "&#x101DF", "&#x101E0", "&#x101E1", "&#x101E2", "&#x101E3", "&#x101E4", "&#x101E5", "&#x101E6", "&#x101E7", "&#x101E8", "&#x101E9", "&#x101EA", "&#x101EB", "&#x101EC", "&#x101ED", "&#x101EE", "&#x101EF", "&#x101F0", "&#x101F1", "&#x101F2", "&#x101F3", "&#x101F4", "&#x101F5", "&#x101F6", "&#x101F7", "&#x101F8", "&#x101F9", "&#x101FA", "&#x101FB", "&#x101FC", "#"];
+
+        class PhaistosSymbol {
+            constructor(index, vegas = false, vowel = false, subscript = false, capital = false) {
+            this.index = index;
+            this.vegas = vegas;
+            this.capital = capital;
+            this.vowel = vowel;
+            this.subscript = subscript;
+            }
+        }
+    
+        function storeFile() {
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput.files.length > 0) {
+                uploadedFile = fileInput.files[0];
+                console.log('File stored:', uploadedFile);
+            } else {
+                console.log('No file selected');
+            }
+        }
+
+        function changeTool() {
+            const selectElement = document.getElementById('toolSelect');
+            const hangmanDiv = document.getElementById('hangmanDiv');
+            const scansionDiv = document.getElementById('scansionDiv');
+            const fileSwitch = document.getElementById('toggleFileSwitch');
+            const toggleTag = document.getElementById('toggleFileTag');
+            if (selectElement.value === 'hangman') {
+                hangmanDiv.hidden = false;
+                scansionDiv.hidden = true;
+                fileSwitch.hidden = false;
+                toggleTag.hidden = false;
+            } else {
+                hangmanDiv.hidden = true;
+                scansionDiv.hidden = false;
+                fileSwitch.hidden = true;
+                toggleTag.hidden = true;
+            }
+        }
+
+        function changeDiskMode() {
+            const selectElement = document.getElementById('diskModeSelect');
+            diskMode = selectElement.value;
+            console.log('Disk mode changed to:', diskMode);
+        }
+
+        function showDetailView() {
+            const detailedView = document.getElementById('detailedView');
+            detailedMode = !detailedMode;
+            detailedView.hidden = !detailedMode;
+            detailButton.innerText = detailedMode ? 'Hide Detailed View' : 'Show Detailed View';
+        }
+
+        function clearSubstitutions(){
+            for(let i = 1; i <= 46; i++){
+                document.getElementById('substitution' + i).value = '';
+            }
+        }
+
+        function addExclusion(){
+            const dropdown = document.getElementById('addExclusionDropdown');
+            const exclusionList = document.getElementById('exclusionList');
+            const selectedValue = dropdown.value;
+            if(selectedValue === 'default'){
+                return;
+            }
+            const listItem = document.createElement('li');
+            listItem.innerHTML = hexSymbols[dropdown.selectedIndex] + ': ';
+            const input = document.createElement('input');
+            input.id = 'exclusion' + selectedValue;
+            listItem.appendChild(input);
+            exclusionList.appendChild(listItem);
+            dropdown.value = 'default';
+        }
+
+        function toggleFileInput() {
+            const isChecked = document.getElementById('toggleFileSwitch').checked;
+            document.getElementById('fileUpload').hidden = isChecked;
+            document.getElementById('toggleFileTag').innerText = isChecked ? 'Enable File Input:' : 'Disable File Input:';
+        }
+
+        function installFont() {
+            const font = new FontFace('Symbola', 'url(https://cdn.jsdelivr.net/gh/uri-hax/cdn/phaistos/Symbola-AjYx.ttf)');
+            font.load().then(loadedFont => {
+                document.fonts.add(loadedFont);
+                console.log('Font installed:', loadedFont);
+            }).catch(error => {
+                console.error('Font installation failed:', error);
+            });
+            document.body.style.fontFamily = 'Symbola';
+        }
+
+        function resizeFont(){
+            // Resize the font of the font in outputTables to fit the screen size using vw
+            // Dynamically resize depending on the cell with largest number of characters in it
+            const tables = document.getElementById('outputTables').getElementsByTagName('table');
+            const highestLineCharCount = Math.max(...Array.from(tables).map(table => {
+                return Math.max(...Array.from(table.rows).map(row => {
+                    return Array.from(row.cells).reduce((sum, cell) => sum + cell.innerText.length, 0);
+                }));
+            }));
+            const fontSize = 100 / (highestLineCharCount / 2.5);
+            const outputTables = document.getElementById('outputTables');
+            outputTables.style.fontSize = fontSize + 'vmin';
+        }
+
+        function createHangman() {
+            if (!uploadedFile || document.getElementById('toggleFileSwitch').checked) {
+                console.log('No file uploaded, using empty input');
+                const emptyInput = "Symbol,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46"
+                var uniqueContent = hangmanForWebsite(emptyInput);
+                document.getElementById('hangman').innerHTML = uniqueContent;
+            } else {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const fileContent = event.target.result;
+                    var uniqueContent = hangmanForWebsite(fileContent);
+                    document.getElementById('hangman').innerHTML = uniqueContent;
+                };
+                reader.readAsText(uploadedFile);
+            }
+            resizeFont();
+            document.getElementById('outputTables').hidden = false;
+        }
+
+        function hangmanForWebsite(fileContent) {
+            // Data Cleaning
+            const rows = fileContent.split('\n');
+            const cleanedRows = rows.map(row => {
+                return row.split(',').map(cell => cell.trim() === 'NA' || cell.trim() === 'NaN' ? '' : cell).join(',');
+            });
+            
+            const columns = [];
+            const numColumns = cleanedRows[0].split(',').length;
+            for (let i = 0; i < numColumns; i++) {
+                const column = cleanedRows.map(row => row.split(',')[i]);
+                columns.push(column.join(','));
+            }
+            const subList = [];
+
+            // Loop through each column, creating a list of possible substitutions
+            columns.forEach(column => {
+                const uniqueSubs = new Set();
+                column.split(',').forEach(cell => {
+                    if (cell !== '' && cell !== '\r\n' && cell !== '\n' && cell !== '\r') {
+                        uniqueSubs.add(cell.replace(/\r?\n|\r/g, ""));
+                    }
+                });
+                subList.push(Array.from(uniqueSubs));
+                uniqueSubs.clear();
+            });
+
+            // Select a random substitution from each list and pass it to hangman creation function
+            let substitutions = [];
+            for (let i = 1; i < subList.length; i++) {
+                // If there is a substitution override in the detailed view, use that
+                let override = document.getElementById('substitution' + i).value;
+                let tempSubList = subList[i];
+
+                if(override !== ''){
+                    substitutions.push(override);
+                // If the list only contains the index, there are no substitutions
+                } else if (tempSubList.length === 1) {
+                    substitutions.push("Unsubstituted");
+                // There must be a list of substitutions to choose from, select on randomly
+                } else {
+                    let randomIndex = Math.floor(Math.random() * tempSubList.length);
+                    let tempSub = '';
+
+                    // Check if the substitution is being excluded
+                    try{
+                        const exclusions = document.getElementById('exclusion' + i).value;
+                        console.log("Exclusions for " + i + " are: " + exclusions);
+                        while(tempSub === '' || exclusions.includes(tempSub)){
+                            randomIndex = Math.floor(Math.random() * tempSubList.length);
+                            if (tempSubList[randomIndex] === undefined) {
+                                tempSub = tempSubList[randomIndex - 1];
+                            } else {
+                                tempSub = tempSubList[randomIndex];
+                            }
+                            if(i === 3){
+                                console.log("Im over here");
+                            }
+                        }
+                    } catch(e) {
+                        console.log(e)
+                        if (tempSubList[randomIndex] === undefined) {
+                            tempSub = tempSubList[randomIndex - 1];
+                        } else {
+                            tempSub = tempSubList[randomIndex];
+                        }
+                    }
+
+                    substitutions.push(tempSub)
+                }
+            }
+            substitutions = substitutions.join(',');
+            return hangmanSubstitution(substitutions, diskMode);
+        }
+
+        function hangmanSubstitution(substitutions, diskOption = "default"){
+            // Variable declarations
+            let singleSubs = [], subTracker = [], diskSymbols = [], possibleSymbols = [], possibleVegasSymbols = [], possibleVowelSymbols = [], returnString = "";
+            
+            // Selecting version of disk to substitute
+            if(diskOption === "default"){
+                diskSymbols = [[new PhaistosSymbol(38), new PhaistosSymbol(3), new PhaistosSymbol(10), '|', new PhaistosSymbol(1), new PhaistosSymbol(13), '|', new PhaistosSymbol(21), new PhaistosSymbol(37), new PhaistosSymbol(35), new PhaistosSymbol(27), new PhaistosSymbol(27), new PhaistosSymbol(12), new PhaistosSymbol(2), '|', new PhaistosSymbol(38), new PhaistosSymbol(3), new PhaistosSymbol(10), '|', new PhaistosSymbol(35, false, false, true), new PhaistosSymbol(19), new PhaistosSymbol(23), '|', new PhaistosSymbol(1), new PhaistosSymbol(13), new PhaistosSymbol(12), new PhaistosSymbol(2), '|', new PhaistosSymbol(12), new PhaistosSymbol(26), new PhaistosSymbol(31)],
+                    [new PhaistosSymbol(19), new PhaistosSymbol(17), new PhaistosSymbol(18), new PhaistosSymbol(6), '|', new PhaistosSymbol(27), new PhaistosSymbol(18), new PhaistosSymbol(32), new PhaistosSymbol(14), new PhaistosSymbol(27), new PhaistosSymbol(12), new PhaistosSymbol(2), '|', new PhaistosSymbol(26, false, false, true), new PhaistosSymbol(31), new PhaistosSymbol(12), new PhaistosSymbol(2), '|', new PhaistosSymbol(1, false, false, true), new PhaistosSymbol(28), '|', new PhaistosSymbol(18), new PhaistosSymbol(22), new PhaistosSymbol(10), new PhaistosSymbol(25), new PhaistosSymbol(27), new PhaistosSymbol(2), '|', new PhaistosSymbol(26, false, false, true), new PhaistosSymbol(31), new PhaistosSymbol(12), new PhaistosSymbol(2)],
+                    [new PhaistosSymbol(23), new PhaistosSymbol(33), '|', new PhaistosSymbol(21), new PhaistosSymbol(37), new PhaistosSymbol(35), new PhaistosSymbol(27), new PhaistosSymbol(27), new PhaistosSymbol(12), new PhaistosSymbol(2), '|', new PhaistosSymbol(26, false, false, true), new PhaistosSymbol(31), new PhaistosSymbol(12), new PhaistosSymbol(2), '|', new PhaistosSymbol(1), new PhaistosSymbol(28), '|', new PhaistosSymbol(18), new PhaistosSymbol(23), new PhaistosSymbol(10), new PhaistosSymbol(25), new PhaistosSymbol(27), new PhaistosSymbol(2), '|', new PhaistosSymbol(11), new PhaistosSymbol(39)],
+                    [new PhaistosSymbol(38), new PhaistosSymbol(23), new PhaistosSymbol(32), new PhaistosSymbol(12), new PhaistosSymbol(2), '|', new PhaistosSymbol(7), new PhaistosSymbol(40), new PhaistosSymbol(41), new PhaistosSymbol(1), '|', new PhaistosSymbol(35), new PhaistosSymbol(19), new PhaistosSymbol(41), new PhaistosSymbol(12), new PhaistosSymbol(2), '|', new PhaistosSymbol(35), new PhaistosSymbol(26), new PhaistosSymbol(31), '|', new PhaistosSymbol(46), new PhaistosSymbol(18), new PhaistosSymbol(6), new PhaistosSymbol(12), new PhaistosSymbol(2), '|', new PhaistosSymbol(2), new PhaistosSymbol(44), new PhaistosSymbol(27)],
+                    [new PhaistosSymbol(12), new PhaistosSymbol(7), new PhaistosSymbol(45), new PhaistosSymbol(27), '|', new PhaistosSymbol(33), new PhaistosSymbol(40), new PhaistosSymbol(4), new PhaistosSymbol(12), new PhaistosSymbol(2), '|', new PhaistosSymbol(34), new PhaistosSymbol(29), new PhaistosSymbol(29), '|', new PhaistosSymbol(7, false, false, true), new PhaistosSymbol(45), new PhaistosSymbol(29), '|', new PhaistosSymbol(12), new PhaistosSymbol(40), new PhaistosSymbol(24), '|', new PhaistosSymbol(18, false, false, true), new PhaistosSymbol(1), new PhaistosSymbol(13), new PhaistosSymbol(12), new PhaistosSymbol(2)],
+                    [new PhaistosSymbol(7, false, false, true), new PhaistosSymbol(45), '|', new PhaistosSymbol(25), new PhaistosSymbol(23), new PhaistosSymbol(34), new PhaistosSymbol(29), '|', new PhaistosSymbol(7), new PhaistosSymbol(23), new PhaistosSymbol(35), new PhaistosSymbol(6), new PhaistosSymbol(2), '|', new PhaistosSymbol(7), new PhaistosSymbol(18), new PhaistosSymbol(39), new PhaistosSymbol(30), new PhaistosSymbol(9), '|', new PhaistosSymbol(8, false, false, true), new PhaistosSymbol(7), new PhaistosSymbol(36), new PhaistosSymbol(29), new PhaistosSymbol(22), '|', new PhaistosSymbol(24), new PhaistosSymbol(18), new PhaistosSymbol(23), new PhaistosSymbol(7)],
+                    [new PhaistosSymbol(7, false, false, true), new PhaistosSymbol(45), new PhaistosSymbol(7), '|', new PhaistosSymbol(35), new PhaistosSymbol(18), new PhaistosSymbol(7), '|', new PhaistosSymbol(25), new PhaistosSymbol(23), new PhaistosSymbol(34), new PhaistosSymbol(27), '|', new PhaistosSymbol(8, false, false, true), new PhaistosSymbol(7), new PhaistosSymbol(36), new PhaistosSymbol(29), new PhaistosSymbol(22), '|', new PhaistosSymbol(7, false, false, true), new PhaistosSymbol(25), new PhaistosSymbol(29), '|', new PhaistosSymbol(13), new PhaistosSymbol(8), new PhaistosSymbol(29)],
+                    [new PhaistosSymbol(8, false, false, true), new PhaistosSymbol(7), new PhaistosSymbol(36), new PhaistosSymbol(29), '|', new PhaistosSymbol(1), new PhaistosSymbol(27), new PhaistosSymbol(9), new PhaistosSymbol(2), '|', new PhaistosSymbol(33), new PhaistosSymbol(39), new PhaistosSymbol(32), new PhaistosSymbol(35), new PhaistosSymbol(6), '|', new PhaistosSymbol(1), new PhaistosSymbol(33), new PhaistosSymbol(29), '|', new PhaistosSymbol(18), new PhaistosSymbol(14), new PhaistosSymbol(16), '|', new PhaistosSymbol(35), new PhaistosSymbol(20), new PhaistosSymbol(24), new PhaistosSymbol(24), new PhaistosSymbol(29)],
+                    [new PhaistosSymbol(1), new PhaistosSymbol(38), new PhaistosSymbol(25), new PhaistosSymbol(27), '|', new PhaistosSymbol(40), new PhaistosSymbol(36), new PhaistosSymbol(26), new PhaistosSymbol(2), '|', new PhaistosSymbol(35), new PhaistosSymbol(40), new PhaistosSymbol(24), new PhaistosSymbol(7), '|', new PhaistosSymbol(25), new PhaistosSymbol(42), new PhaistosSymbol(37), new PhaistosSymbol(22), '|', new PhaistosSymbol(18), new PhaistosSymbol(1), new PhaistosSymbol(13), new PhaistosSymbol(7), new PhaistosSymbol(15), '|', new PhaistosSymbol(33), new PhaistosSymbol(39), new PhaistosSymbol(1)],
+                    [new PhaistosSymbol(43, false, false, true), new PhaistosSymbol(18), new PhaistosSymbol(23), new PhaistosSymbol(16), '|', new PhaistosSymbol(12), new PhaistosSymbol(20), new PhaistosSymbol(24), new PhaistosSymbol(33), '|', new PhaistosSymbol(27), new PhaistosSymbol(25), new PhaistosSymbol(22), '|', new PhaistosSymbol(5, false, false, true), new PhaistosSymbol(23), new PhaistosSymbol(37), new PhaistosSymbol(2), '|', new PhaistosSymbol(35), new PhaistosSymbol(7), new PhaistosSymbol(45), new PhaistosSymbol(27), '|', new PhaistosSymbol(7), new PhaistosSymbol(40), new PhaistosSymbol(22), new PhaistosSymbol(12), new PhaistosSymbol(2)]];
+            } else if(diskOption === "vegas"){
+                diskSymbols = [[new PhaistosSymbol(38), new PhaistosSymbol(3), new PhaistosSymbol(10), '|', new PhaistosSymbol(1, false, true), new PhaistosSymbol(13), '|', new PhaistosSymbol(21), new PhaistosSymbol(37), new PhaistosSymbol(35, false, true), new PhaistosSymbol(27, true), new PhaistosSymbol(27, true), new PhaistosSymbol(12), new PhaistosSymbol(2, true), '|', new PhaistosSymbol(38), new PhaistosSymbol(3), new PhaistosSymbol(10), '|', new PhaistosSymbol(35, false, true, true), new PhaistosSymbol(19), new PhaistosSymbol(23, false, true), '|', new PhaistosSymbol(1, false, true), new PhaistosSymbol(13), new PhaistosSymbol(12), new PhaistosSymbol(2, true), '|', new PhaistosSymbol(12), new PhaistosSymbol(26, false, true), new PhaistosSymbol(31, true)],
+                    [new PhaistosSymbol(19), new PhaistosSymbol(17), new PhaistosSymbol(18), new PhaistosSymbol(6), '|', new PhaistosSymbol(27, true), new PhaistosSymbol(18), new PhaistosSymbol(32), new PhaistosSymbol(14), new PhaistosSymbol(27, true), new PhaistosSymbol(12), new PhaistosSymbol(2, true), '|', new PhaistosSymbol(26, false, true, true), new PhaistosSymbol(31, true), new PhaistosSymbol(12), new PhaistosSymbol(2, true), '|', new PhaistosSymbol(1, false, true, true), new PhaistosSymbol(28, false, true), '|', new PhaistosSymbol(18), new PhaistosSymbol(22), new PhaistosSymbol(10), new PhaistosSymbol(25), new PhaistosSymbol(27, true), new PhaistosSymbol(2, true), '|', new PhaistosSymbol(26, false, true, subscript=true), new PhaistosSymbol(31, true), new PhaistosSymbol(12), new PhaistosSymbol(2, true)],
+                    [new PhaistosSymbol(23, false, true), new PhaistosSymbol(33, false, true), '|', new PhaistosSymbol(21), new PhaistosSymbol(37), new PhaistosSymbol(35, false, true), new PhaistosSymbol(27, true), new PhaistosSymbol(27, true), new PhaistosSymbol(12), new PhaistosSymbol(2, true), '|', new PhaistosSymbol(26, false, true, true), new PhaistosSymbol(31, true), new PhaistosSymbol(12), new PhaistosSymbol(2, true), '|', new PhaistosSymbol(1, false, true), new PhaistosSymbol(28, false, true), '|', new PhaistosSymbol(18), new PhaistosSymbol(23, false, true), new PhaistosSymbol(10), new PhaistosSymbol(25), new PhaistosSymbol(27, true), new PhaistosSymbol(2, true), '|', new PhaistosSymbol(11, false, true), new PhaistosSymbol(39, false, true)],
+                    [new PhaistosSymbol(38), new PhaistosSymbol(23, false, true), new PhaistosSymbol(32), new PhaistosSymbol(12), new PhaistosSymbol(2, true), '|', new PhaistosSymbol(7, false, true), new PhaistosSymbol(40), new PhaistosSymbol(41), new PhaistosSymbol(1, false, true), '|', new PhaistosSymbol(35, false, true), new PhaistosSymbol(19), new PhaistosSymbol(41), new PhaistosSymbol(12), new PhaistosSymbol(2, true), '|', new PhaistosSymbol(35, false, true), new PhaistosSymbol(26, false, true), new PhaistosSymbol(31, true), '|', new PhaistosSymbol(46), new PhaistosSymbol(18), new PhaistosSymbol(6), new PhaistosSymbol(12), new PhaistosSymbol(2, true), '|', new PhaistosSymbol(2, true), new PhaistosSymbol(44), new PhaistosSymbol(27, true)],
+                    [new PhaistosSymbol(12), new PhaistosSymbol(7, false, true), new PhaistosSymbol(45, false, true), new PhaistosSymbol(27, true), '|', new PhaistosSymbol(33, false, true), new PhaistosSymbol(40), new PhaistosSymbol(4), new PhaistosSymbol(12), new PhaistosSymbol(2, true), '|', new PhaistosSymbol(34), new PhaistosSymbol(29, true), new PhaistosSymbol(29, true), '|', new PhaistosSymbol(7, false, true, true), new PhaistosSymbol(45, false, true), new PhaistosSymbol(29, true), '|', new PhaistosSymbol(12), new PhaistosSymbol(40), new PhaistosSymbol(24), '|', new PhaistosSymbol(18, false, false, true), new PhaistosSymbol(1, false, true), new PhaistosSymbol(13), new PhaistosSymbol(12), new PhaistosSymbol(2, true)],
+                    [new PhaistosSymbol(7, false, true, true), new PhaistosSymbol(45, false, true), '|', new PhaistosSymbol(25), new PhaistosSymbol(23, false, true), new PhaistosSymbol(34), new PhaistosSymbol(29, true), '|', new PhaistosSymbol(7, false, true), new PhaistosSymbol(23, false, true), new PhaistosSymbol(35, false, true), new PhaistosSymbol(6), new PhaistosSymbol(2, true), '|', new PhaistosSymbol(7, false, true), new PhaistosSymbol(18), new PhaistosSymbol(39, false, true), new PhaistosSymbol(30), new PhaistosSymbol(9), '|', new PhaistosSymbol(8, false, true, true), new PhaistosSymbol(7, false, true), new PhaistosSymbol(36), new PhaistosSymbol(29, true), new PhaistosSymbol(22), '|', new PhaistosSymbol(24), new PhaistosSymbol(18), new PhaistosSymbol(23, false, true), new PhaistosSymbol(7, false, true)],
+                    [new PhaistosSymbol(7, false, true, true), new PhaistosSymbol(45, false, true), new PhaistosSymbol(7, false, true), '|', new PhaistosSymbol(35, false, true), new PhaistosSymbol(18), new PhaistosSymbol(7, false, true), '|', new PhaistosSymbol(25), new PhaistosSymbol(23, false, true), new PhaistosSymbol(34), new PhaistosSymbol(27, true), '|', new PhaistosSymbol(8, false, true, true), new PhaistosSymbol(7, false, true), new PhaistosSymbol(36), new PhaistosSymbol(29, true), new PhaistosSymbol(22), '|', new PhaistosSymbol(7, false, true, true), new PhaistosSymbol(25), new PhaistosSymbol(29, true), '|', new PhaistosSymbol(13), new PhaistosSymbol(8, false, true), new PhaistosSymbol(29, true)],
+                    [new PhaistosSymbol(8, false, true, true), new PhaistosSymbol(7, false, true), new PhaistosSymbol(36), new PhaistosSymbol(29, true), '|', new PhaistosSymbol(1, false, true), new PhaistosSymbol(27, true), new PhaistosSymbol(9), new PhaistosSymbol(2, true), '|', new PhaistosSymbol(33, false, true), new PhaistosSymbol(39, false, true), new PhaistosSymbol(32), new PhaistosSymbol(35, false, true), new PhaistosSymbol(6), '|', new PhaistosSymbol(1, false, true), new PhaistosSymbol(33, false, true), new PhaistosSymbol(29, true), '|', new PhaistosSymbol(18), new PhaistosSymbol(14), new PhaistosSymbol(16), '|', new PhaistosSymbol(35, false, true), new PhaistosSymbol(20), new PhaistosSymbol(24), new PhaistosSymbol(24), new PhaistosSymbol(29, true)],
+                    [new PhaistosSymbol(1, false, true), new PhaistosSymbol(38), new PhaistosSymbol(25), new PhaistosSymbol(27, true), '|', new PhaistosSymbol(40), new PhaistosSymbol(36), new PhaistosSymbol(26, false, true), new PhaistosSymbol(2, true), '|', new PhaistosSymbol(35, false, true), new PhaistosSymbol(40), new PhaistosSymbol(24), new PhaistosSymbol(7, false, true), '|', new PhaistosSymbol(25), new PhaistosSymbol(42), new PhaistosSymbol(37), new PhaistosSymbol(22), '|', new PhaistosSymbol(18), new PhaistosSymbol(1, false, true), new PhaistosSymbol(13), new PhaistosSymbol(7, false, true), new PhaistosSymbol(15), '|', new PhaistosSymbol(33, false, true), new PhaistosSymbol(39, false, true), new PhaistosSymbol(1, false, true)],
+                    [new PhaistosSymbol(43, false, true, true), new PhaistosSymbol(18), new PhaistosSymbol(23, false, true), new PhaistosSymbol(16), '|', new PhaistosSymbol(12), new PhaistosSymbol(20), new PhaistosSymbol(24), new PhaistosSymbol(33, false, true), '|', new PhaistosSymbol(27, true), new PhaistosSymbol(25), new PhaistosSymbol(22), '|', new PhaistosSymbol(5, false, false, true), new PhaistosSymbol(23, false, true), new PhaistosSymbol(37), new PhaistosSymbol(2, true), '|', new PhaistosSymbol(35, false, true), new PhaistosSymbol(7, false, true), new PhaistosSymbol(45, false, true), new PhaistosSymbol(27, true), '|', new PhaistosSymbol(7, false, true), new PhaistosSymbol(40), new PhaistosSymbol(22), new PhaistosSymbol(12), new PhaistosSymbol(2, true)]];
+            }
+
+            // Creating list of possible symbols for those without substitutions
+            possibleSymbols = ['κ', 'χ', 'ι', 'γ', 'π', 'φ', 'β', 'υ', 'τ', 'θ', 'δ', '῾', 'λ', 'μ', 'ν', 'γ', 'ρ', 'ῤ', 'σ', 'ζ', 'ξ', 'ψ', 'ζ', 'ᾰ', 'ᾱ', 'η', 'ε', "ει", 'ῐ', 'ῑ', 'ω', 'ο', "ου", 'ῠ', 'ῡ', "αι", "αυ", "ει", "ευ", "οι", "υι", 'ᾳ', 'ῃ', 'ῳ'];
+            possibleVegasSymbols = ['α', 'ε', 'η', 'ι', 'o', 'υ', 'ω', 'σ', 'ρ', 'ν'];
+            possibleVowelSymbols = ['α', 'ε', 'η', 'ι', 'o', 'υ', 'ω'];
+            singleSubs = Array.from({length: 47}, (_, i) => "Unsubstituted");
+            subTracker = Array.from({length: 47}, (_, i) => "Unsubstituted");
+            substitutions = substitutions.split(',');
+
+            // Loop through substitions, replacing values in single subs with the values from the substitution
+            for(let i = 0; i < substitutions.length; i++){
+                try{
+                    singleSubs[i+1] = substitutions[i];
+                    subTracker[i+1] = "Subbed";
+                } catch {
+                    continue;
+                }
+            }
+            
+            for(let i = 0; i < singleSubs.length; i++){
+                if(singleSubs[i] === "Unsubstituted"){
+                    let tempSub = '';
+                    try{
+                        const exclusions = document.getElementById('exclusion' + i).value.split(',');
+                        
+                        if(exclusions.length < possibleSymbols.length){
+                            while(tempSub === '' || exclusions.includes(tempSub)){
+                                tempSub = possibleSymbols[Math.floor(Math.random() * possibleSymbols.length)]
+                            }
+                        } else {
+                            console.log("Too many exclusions for index " + i);
+                            tempSub = possibleSymbols[Math.floor(Math.random() * possibleSymbols.length)];
+                        }
+
+                    } catch {
+                        tempSub = possibleSymbols[Math.floor(Math.random() * possibleSymbols.length)];
+                    }
+
+                    singleSubs[i] = tempSub;
+                }
+            }
+            lastHangmanSubs = singleSubs.join(',');
+
+            // Loop through disk symbols, replacing values with the substitutions
+            for(i = 0; i < diskSymbols.length; i++){
+                let tempSymbolString = "", tempSubString = "", tempIndexString = "";
+                let columnCounter = 0;
+                let tempElement, tempOverride;
+                for(j = 0; j < diskSymbols[i].length; j++){
+                    if(diskSymbols[i][j] === "|"){
+                        tempElement = document.getElementById('table' + (i + 1));
+                        tempElement.rows[0].cells[columnCounter].innerHTML = tempSymbolString;
+                        tempElement.rows[1].cells[columnCounter].innerHTML = tempIndexString;
+                        tempElement.rows[2].cells[columnCounter].innerHTML = tempSubString;
+                        tempSymbolString = "";
+                        tempSubString = "";
+                        tempIndexString = "";
+                        columnCounter++;
+
+                        tempSymbolString += " | ";
+                        tempSubString += " | ";
+                        tempIndexString += " | ";
+                    } else {
+                        tempSymbolString += hexSymbols[diskSymbols[i][j].index] + " ";
+                        tempIndexString += diskSymbols[i][j].index + " ";
+
+                        try {
+                            tempOverride = document.getElementById("substitution" + diskSymbols[i][j].index + "S").value;
+                        } catch (error) {
+                            tempOverride = "";
+                        }
+
+                        if((diskSymbols[i][j].subscript) && (tempOverride !== "")){
+                            tempSubString += tempOverride + " ";
+                        } else if(subTracker[diskSymbols[i][j].index] === "Subbed"){
+                            tempSubString += singleSubs[diskSymbols[i][j].index] + " ";
+                        } else {
+                            if(diskSymbols[i][j].vowel){
+                                tempSubString += possibleVowelSymbols[Math.floor(Math.random() * possibleVowelSymbols.length)] + " ";
+                            } else if(diskSymbols[i][j].vegas){
+                                tempSubString += possibleVegasSymbols[Math.floor(Math.random() * possibleVegasSymbols.length)] + " ";
+                            } else {
+                                tempSubString += possibleSymbols[Math.floor(Math.random() * possibleSymbols.length)] + " ";
+                            }
+                        }
+                    }
+                }
+                
+                tempElement = document.getElementById('table' + (i + 1));
+                tempElement.rows[0].cells[columnCounter].innerHTML = tempSymbolString;
+                tempElement.rows[1].cells[columnCounter].innerHTML = tempIndexString;
+                tempElement.rows[2].cells[columnCounter].innerHTML = tempSubString;
+                returnString += tempSymbolString + "\n" + tempIndexString + "\n" + tempSubString + "\n\n";
+            }
+
+            return "";
+        }
+
+        function downloadHangman() {
+            const tables = document.getElementById('outputTables').getElementsByTagName('table');
+            let textContent = '', tableIndex = 1;
+
+            for (let table of tables) {
+                if(tableIndex < 6){
+                    textContent += "Line" + String(tableIndex) + "A\n";
+                } else if(tableIndex == 10){
+                    textContent += "Line5B\n";
+                } else {
+                    textContent += "Line" + String(tableIndex % 5) + "B\n";
+                }
+
+                for (let row of table.rows) {
+                    for (let cell of row.cells) {
+                        textContent += cell.innerText + '\t';
+                    }
+                    textContent += '\n';
+                }
+                textContent += '\n';
+
+                tableIndex++;
+            }
+
+            const blob = new Blob([textContent], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'hangman_output.txt';
+            link.click();
+        }
+
+        function saveSubs(){
+            tempSubs = lastHangmanSubs.split(',');
+            console.log(tempSubs);
+            for(let i = 1; i < tempSubs.length; i++){
+                document.getElementById('substitution' + i).value = tempSubs[i];
+            }
+        }
+    </script>
+</body>
+</html>
