@@ -215,7 +215,7 @@ class Scansion:
         return sentences
 
     @staticmethod
-    def _syllable_condenser(words_syllables: list[list[list[str]]], splitByLine = False) -> list[list[str]]:
+    def _syllable_condenser(words_syllables: list[list[list[str]]]) -> list[list[str]]:
         """Reduce a list of ``[sentence[word[syllable]]]`` to ``[sentence[syllable]]``.
 
         Args:
@@ -230,16 +230,11 @@ class Scansion:
         [['νε', 'ος', 'μεν', 'και', 'α', 'πει', 'ρος', 'δι', 'κων', 'ε', 'γω', 'γε', 'ε', 'τι'], ['μεν', 'και', 'α', 'πει', 'ρος']]
         """
         sentences_syllables = list()
-        if(splitByLine):
-            for sentence in words_syllables:
-                for word in sentence:
-                    sentences_syllables.append(word)
-        else:    
-            for sentence in words_syllables:
-                syllables_sentence: list[str] = list()
-                for word in sentence:
-                    syllables_sentence += word
-                sentences_syllables.append(syllables_sentence)
+        for sentence in words_syllables:
+            syllables_sentence: list[str] = list()
+            for word in sentence:
+                syllables_sentence += word
+            sentences_syllables.append(syllables_sentence)
         return sentences_syllables
 
     def _long_by_nature(self, syllable: str) -> bool:
@@ -449,7 +444,7 @@ class Scansion:
 
         return scanned_text
 
-    def _make_syllables(self, sentences_words: str, byNewline = False) -> list[list[list[str]]]:
+    def _make_syllables(self, sentences_words: str) -> list[list[list[str]]]:
         """First tokenize, then divide word tokens into a list of syllables.
         Note that a syllable in this instance is defined as a vocalic
         group (i.e., vowel or a diphthong). This means that all
@@ -480,12 +475,6 @@ class Scansion:
                 cur_letter_in = 0  # Begins general iterator
                 while cur_letter_in < len(word):
                     letter = word[cur_letter_in]
-                    if(letter == '\n' and byNewline):
-                        # Words are being split across lines, 
-                        # When newline encountered, find way to end word sentence and start new one
-                        if(len(syll_per_word) > 0):
-                            syll_per_sent.append(syll_per_word)
-                            syll_per_word = []
                     if (cur_letter_in != len(word) - 1) and (
                         word[cur_letter_in] + word[cur_letter_in + 1]
                     ) in self.diphthongs:

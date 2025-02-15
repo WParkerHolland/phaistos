@@ -1,9 +1,0 @@
-# Requirements for Running Tkinter
-numpy
-stringcase
-tqdm
-boltons
-requests
-spacy
-stanza
-genism
