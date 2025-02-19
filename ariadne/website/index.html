@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phaistos Decoding Tool</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
-    
 </head>
 <body onload="installFont()">
     <h1>Phaistos Disc Decoding Tool</h1>
@@ -16,13 +14,6 @@
     </div>
     <label for="toggleSwitch" id="toggleFileTag">Disable File Input:</label>
     <input type="checkbox" id="toggleFileSwitch" onclick="toggleFileInput()">
-    <br><br>
-    <label for="toolSelect">Select Tool:</label>
-    <select id="toolSelect" onchange="changeTool()">
-        <option value="hangman">Hangman</option>
-        <option value="scansion">Scansion</option>
-    </select>
-
     <br>
     <div id="hangmanDiv">
         <h2>Hangman</h2>
@@ -288,25 +279,6 @@
                 console.log('File stored:', uploadedFile);
             } else {
                 console.log('No file selected');
-            }
-        }
-
-        function changeTool() {
-            const selectElement = document.getElementById('toolSelect');
-            const hangmanDiv = document.getElementById('hangmanDiv');
-            const scansionDiv = document.getElementById('scansionDiv');
-            const fileSwitch = document.getElementById('toggleFileSwitch');
-            const toggleTag = document.getElementById('toggleFileTag');
-            if (selectElement.value === 'hangman') {
-                hangmanDiv.hidden = false;
-                scansionDiv.hidden = true;
-                fileSwitch.hidden = false;
-                toggleTag.hidden = false;
-            } else {
-                hangmanDiv.hidden = true;
-                scansionDiv.hidden = false;
-                fileSwitch.hidden = true;
-                toggleTag.hidden = true;
             }
         }
 
